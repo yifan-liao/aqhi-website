@@ -12,7 +12,7 @@ djangorestframework==3.3.3
 django-filter==0.13.0
 python-dateutil==2.5.3
 # You should install the latest version on Github
-drf-extensions
+drf-extensions==0.3.0
 
 # Database
 psycopg2==2.6.1
