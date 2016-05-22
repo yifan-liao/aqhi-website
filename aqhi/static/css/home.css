@@ -1,0 +1,234 @@
+body {
+  position: relative;
+  padding-top: 70px; }
+
+.city-panel .city-map {
+  width: 100%;
+  height: 100%; }
+
+/* General Style */
+.list-item-group {
+  position: relative;
+  display: table;
+  table-layout: fixed;
+  border-collapse: separate;
+  border: 1px solid #ccc; }
+  .list-item-group .list-item-group-cell {
+    display: table-cell;
+    padding: 0.375rem 0.75rem;
+    width: 100%; }
+  .list-item-group .list-item-group-addon {
+    display: table-cell;
+    padding: 0.375rem 0.75rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1;
+    color: #55595c;
+    text-align: center;
+    background-color: #eceeef;
+    width: 1%;
+    white-space: nowrap;
+    vertical-align: middle; }
+  .list-item-group .list-item-group-addon:first-child,
+  .list-item-group .list-item-group-cell:first-child {
+    border-right: 1px solid #ccc; }
+  .list-item-group .list-item-group-addon:not(:first-child):not(:last-child),
+  .list-item-group .list-item-group-cell:not(:first-child):not(:last-child) {
+    border-right: 1px solid #ccc; }
+
+.list-item-group:first-child {
+  border-top-left-radius: 0.25rem;
+  border-top-right-radius: 0.25rem; }
+
+.list-item-group:last-child {
+  border-bottom-left-radius: 0.25rem;
+  border-bottom-right-radius: 0.25rem; }
+
+.list-item-group:not(:first-child):not(:last-child),
+.list-item-group:first-child {
+  border-bottom: 0; }
+
+/* Vertical align row */
+.valign-row {
+  display: flex;
+  align-items: center; }
+
+.halign-row {
+  display: flex;
+  flex-direction: column;
+  align-items: center; }
+
+/* Loading icon and its container */
+.loading {
+  position: relative; }
+
+.loading-overlay {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  z-index: 2;
+  background-color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center; }
+  .loading-overlay svg path,
+  .loading-overlay svg rect {
+    fill: #FF6700; }
+
+/* General rules for two cards */
+@font-face {
+  font-family: "Lato";
+  src: url("../fonts/Lato-Light.ttf") format("truetype"); }
+.aqi-head,
+.temp-head {
+  font-family: "Lato", "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: 300;
+  font-size: 6rem; }
+
+/* Overview.air-condition-card */
+.air-condition-card .aqi-head + small {
+  font-size: 50%; }
+.air-condition-card .pollutant-header {
+  font-size: 1.25rem; }
+.air-condition-card .pollutant-name {
+  font-size: 1rem;
+  width: auto; }
+.air-condition-card .pollutant-data {
+  width: 100%; }
+.air-condition-card .quality-head,
+.air-condition-card .primary-pollutant-block,
+.air-condition-card .primary-pollutant-list li {
+  display: inline-block; }
+.air-condition-card .pollutant-col .list-item-group-cell {
+  text-align: right; }
+  .air-condition-card .pollutant-col .list-item-group-cell .label {
+    margin-left: 1rem; }
+
+.air-condition-card .qlty-and-plt-block {
+  display: flex;
+  align-items: flex-end; }
+  .air-condition-card .qlty-and-plt-block .quality-head {
+    display: inline-block;
+    text-align: center;
+    border-radius: 0.25rem;
+    padding: 0.375rem 1rem;
+    min-width: 5rem;
+    font-size: 1.5rem;
+    margin-bottom: 0; }
+  .air-condition-card .qlty-and-plt-block .quality-head.qlty-excellent {
+    background-color: #00e400;
+    border-color: #00e400; }
+  .air-condition-card .qlty-and-plt-block .quality-head.qlty-good {
+    background-color: yellow;
+    border-color: yellow; }
+  .air-condition-card .qlty-and-plt-block .quality-head.qlty-lightly {
+    background-color: #ff7e00;
+    border-color: #ff7e00; }
+  .air-condition-card .qlty-and-plt-block .quality-head.qlty-moderately {
+    background-color: red;
+    border-color: red;
+    color: #fff; }
+  .air-condition-card .qlty-and-plt-block .quality-head.qlty-heavily {
+    background-color: #99004c;
+    border-color: #99004c;
+    color: #fff; }
+  .air-condition-card .qlty-and-plt-block .quality-head.qlty-severely {
+    background-color: #7e0023;
+    border-color: #7e0023;
+    color: #fff; }
+  .air-condition-card .qlty-and-plt-block .quality-head.qlty-moderately,
+  .air-condition-card .qlty-and-plt-block .quality-head.qlty-lightly,
+  .air-condition-card .qlty-and-plt-block .quality-head.qlty-severely,
+  .air-condition-card .qlty-and-plt-block .quality-head.qlty-heavily {
+    letter-spacing: -1px;
+    line-height: 1.1; }
+  .air-condition-card .qlty-and-plt-block .quality-head[class*="qlty-"] {
+    border-width: 1px; }
+  .air-condition-card .qlty-and-plt-block .primary-pollutant-header {
+    font-size: 0.9rem; }
+  .air-condition-card .qlty-and-plt-block .primary-pollutant-block {
+    margin-left: 1rem; }
+    .air-condition-card .qlty-and-plt-block .primary-pollutant-block .primary-pollutant-list {
+      margin-bottom: 0;
+      padding-left: 0; }
+      .air-condition-card .qlty-and-plt-block .primary-pollutant-block .primary-pollutant-list li {
+        text-align: center;
+        border-radius: 0.25rem;
+        border: 1px solid black;
+        padding: 0 0.6rem; }
+      .air-condition-card .qlty-and-plt-block .primary-pollutant-block .primary-pollutant-list li.pol-co {
+        background-color: #2f4554;
+        border-color: #2f4554;
+        color: #fff; }
+      .air-condition-card .qlty-and-plt-block .primary-pollutant-block .primary-pollutant-list li.pol-no2 {
+        background-color: #61a0a8;
+        border-color: #61a0a8; }
+      .air-condition-card .qlty-and-plt-block .primary-pollutant-block .primary-pollutant-list li.pol-o3 {
+        background-color: #d48265;
+        border-color: #d48265; }
+      .air-condition-card .qlty-and-plt-block .primary-pollutant-block .primary-pollutant-list li.pol-o3_8h {
+        background-color: #91c7aE;
+        border-color: #91c7ae; }
+      .air-condition-card .qlty-and-plt-block .primary-pollutant-block .primary-pollutant-list li.pol-pm10 {
+        background-color: #749f83;
+        border-color: #749f83; }
+      .air-condition-card .qlty-and-plt-block .primary-pollutant-block .primary-pollutant-list li.pol-pm2_5 {
+        background-color: #ca8622;
+        border-color: #ca8622; }
+      .air-condition-card .qlty-and-plt-block .primary-pollutant-block .primary-pollutant-list li.pol-so2 {
+        background-color: #bda29a;
+        border-color: #bda29a; }
+
+/* Overview.weather-card */
+.weather-card .cur-weather-block i.wi {
+  bottom: 0;
+  right: -0.5rem;
+  font-size: 2.5rem; }
+.weather-card .cur-weather-text {
+  margin-bottom: 0.5rem; }
+.weather-card .next-day-weather-block {
+  justify-content: space-between; }
+  .weather-card .next-day-weather-block i.wi {
+    font-size: 2rem; }
+.weather-card .next-day-weather-data {
+  margin-top: 0.5rem;
+  width: 100%;
+  justify-content: space-between; }
+.weather-card .next-day-weather-header {
+  text-align: center;
+  border-radius: 0.25rem;
+  padding: 0.1rem 0.6rem; }
+.weather-card .next-day-weather-header.night {
+  background-color: #9b59b6;
+  color: #f3eda3; }
+.weather-card .next-day-weather-header.day {
+  background-color: #f3eda3;
+  color: #9b59b6; }
+.weather-card .weather-update-time-text {
+  margin-bottom: 0; }
+.weather-card .weekday-max-temp {
+  margin-right: 0.8rem; }
+.weather-card .weekday-text {
+  font-size: 1rem; }
+.weather-card .weekday-weather {
+  justify-content: flex-end; }
+  .weather-card .weekday-weather .weekday-weather-text {
+    margin-right: 0.8rem;
+    font-size: 0.8rem; }
+.weather-card .weather-weekday-text {
+  margin-left: 1rem; }
+.weather-card .weekday-temp-range {
+  margin-right: 1.5rem; }
+.weather-card .hourly-weather-list {
+  padding-left: 0;
+  justify-content: center; }
+.weather-card .hourly-weather-item {
+  margin-right: 2rem; }
+.weather-card .hourly-weather-time {
+  margin-bottom: 1rem; }
+.weather-card .hourly-weather-temp {
+  font-family: "Lato", "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 1.5rem; }
+
+/*# sourceMappingURL=home.css.map */

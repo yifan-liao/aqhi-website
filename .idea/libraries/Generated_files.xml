@@ -1,0 +1,16 @@
+<component name="libraryTable">
+  <library name="Generated files" type="javaScript">
+    <properties>
+      <sourceFilesUrls>
+        <item url="file://$PROJECT_DIR$/aqhi/static/js/home-compiled.js" />
+        <item url="file://$PROJECT_DIR$/aqhi/static/js/test_home-compiled.js" />
+      </sourceFilesUrls>
+    </properties>
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/aqhi/static/lib/moment-2.13.0/moment-with-locales.min-compiled.js" />
+      <root url="file://$PROJECT_DIR$/aqhi/static/js/home-compiled.js" />
+      <root url="file://$PROJECT_DIR$/aqhi/static/js/test_home-compiled.js" />
+    </CLASSES>
+    <SOURCES />
+  </library>
+</component>

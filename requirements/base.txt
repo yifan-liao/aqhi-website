@@ -1,0 +1,33 @@
+# Django
+django==1.9.5
+
+# Configuration
+django-environ==0.4.0
+
+# Forms
+django-crispy-forms==1.6.0
+
+# REST API
+djangorestframework==3.3.3
+django-filter==0.13.0
+python-dateutil==2.5.3
+# You should install the latest version on Github
+drf-extensions
+
+# Database
+psycopg2==2.6.1
+
+# Tools to get data
+lxml==3.6.0
+chardet==2.3.0
+pytz==2016.4
+
+# Tools for custom commands
+paramiko==2.0.0
+
+# web crawling
+scrapy==1.1.0
+
+# buptnet
+lxml==3.6.0
+requests==2.9.1

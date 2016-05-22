@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block stylesheets %}
+  {{ block.super }}
+  <link href="{% static 'lib/weather-icons-2.0/css/weather-icons.min.css' %}" rel="stylesheet">
+  <link href="{% static 'css/home.css' %}" rel="stylesheet">
+{% endblock stylesheets %}
+
+{% block scrollspy-nav %}
+  <div class="navbar-nav nav">
+    <a class="nav-item nav-link" href="#overview">Overview</a>
+    <a class="nav-item nav-link" href="#history">History</a>
+    <a class="nav-item nav-link" href="#rank">Rank</a>
+  </div>
+{% endblock scrollspy-nav %}
+
+{% block content %}
+  <div id="city-accordion" role="tablist" aria-multiselectable="true">
+    {% for panel in panel_list %}
+      {{ panel|safe }}
+    {% endfor %}
+  </div>
+
+  <footer class="primary-footer">
+    <small>&copy; AQHI Web</small>
+  </footer>
+{% endblock %}
+
+{% block javascript %}
+  {{ block.super }}
+  <script src="{% static 'lib/moment-2.13.0/moment-with-locales.min.js' %}"></script>
+  <script src="{% static 'lib/echarts-3.1.9.min.js' %}"></script>
+  <script src="{% static 'js/home.js' %}"></script>
+{% endblock javascript %}

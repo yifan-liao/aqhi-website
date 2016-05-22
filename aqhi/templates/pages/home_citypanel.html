@@ -1,0 +1,30 @@
+{% comment %}
+A template for a city panel in a div.
+The parent div has an id of 'city-accordion'
+
+Context variables:
+  :param filled: whether to fill the content
+  :type filled: bool
+  :param collapsed: whether to collapse the content
+  :type collapsed: bool
+  :param city_en: city's English name, must be unique
+  :param title: panel's title
+  :param primary: primary panel flag
+{% endcomment %}
+<div class="panel panel-default city-panel {% if primary %}primary-city-panel{% endif %}" data-city="{{ city_en }}">
+
+  <div class="panel-heading" role="tab" id="heading-{{ city_en }}">
+    <h4 class="panel-title">
+      <a data-toggle="collapse" data-parent="#city-accordion" href="#collapse-{{ city_en }}" aria-expanded="true" aria-controls="collapseOne">
+        {{ title|safe }}
+      </a>
+    </h4>
+  </div>
+
+  <div id="collapse-{{ city_en }}" class="panel-collapse collapse {% if not collapsed %}in{% endif %}" role="tabpanel" aria-labelledby="heading-{{ city_en }}">
+    {% if filled %}
+    {% include 'pages/home_citypanel_body.html' %}
+    {% endif %}
+  </div>
+
+</div>

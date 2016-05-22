@@ -1,0 +1,244 @@
+<div class="card-deck city-overview-deck">
+
+  <div class="card air-condition-card">
+    <div class="card-header">
+      空气质量
+      <p class="card-text air-condition-update-time-text pull-xs-right">
+        <small class="text-muted">更新于 <span class="air-condition-update-time-data"></span></small>
+      </p>
+    </div>
+    <div class="card-content loading">
+      {% include 'pages/home_loader.html' %}
+      <div class="card-block">
+        <div class="container">
+
+          <div class="row valign-row">
+            <div class="col-md-5">
+              <!-- AQI data -->
+              <h1 class="card-title">
+                <span class="aqi-head"></span>
+                <small class="text-muted">AQI</small>
+              </h1>
+            </div>
+            <div class="col-md-7">
+              <div class="qlty-and-plt-block">
+                <!-- Quality data -->
+                <h2 class="quality-head"></h2>
+                <div class="primary-pollutant-block">
+                  <div class="primary-pollutant-header">首要污染物</div>
+                  <!-- Primary Pollutant data list -->
+                  <ul class="primary-pollutant-list">
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item">
+            <div class="container">
+
+              <h2 class="pollutant-header card-title">各项污染物浓度</h2>
+
+              <!-- Pollutant data -->
+              <div class="row pollutant-row">
+                <div class="col-md-6">
+                  <div class="pollutant-col">
+                    <div class="list-item-group">
+                      <span class="list-item-group-addon pollutant-name pol-pm2_5">PM2.5</span>
+                      <div class="list-item-group-cell pol-pm2_5">
+                        <span class="pollutant-data pol-pm2_5"></span>
+                        <span class="label label-default label-pill pull-xs-right">1h</span>
+                      </div>
+                    </div>
+
+                    <div class="list-item-group">
+                      <span class="list-item-group-addon pollutant-name pol-pm10">PM10</span>
+                      <div class="list-item-group-cell pol-pm10">
+                        <span class="pollutant-data pol-pm10"></span>
+                        <span class="label label-default label-pill pull-xs-right">1h</span>
+                      </div>
+                    </div>
+
+                    <div class="list-item-group">
+                      <span class="list-item-group-addon pollutant-name pol-co">CO</span>
+                      <div class="list-item-group-cell pol-co">
+                        <span class="pollutant-data pol-co"></span>
+                        <span class="label label-default label-pill pull-xs-right">1h</span>
+                      </div>
+                    </div>
+
+                    <div class="list-item-group">
+                      <span class="list-item-group-addon pollutant-name pol-no2">NO2</span>
+                      <div class="list-item-group-cell pol-no2">
+                        <span class="pollutant-data pol-no2"></span>
+                        <span class="label label-default label-pill pull-xs-right">1h</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="pollutant-col">
+                    <div class="list-item-group">
+                      <span class="list-item-group-addon pollutant-name pol-o3">O3</span>
+                      <div class="list-item-group-cell pol-o3">
+                        <span class="pollutant-data pol-o3"></span>
+                        <span class="label label-default label-pill pull-xs-right">1h</span>
+                      </div>
+                    </div>
+
+                    <div class="list-item-group">
+                      <span class="list-item-group-addon pollutant-name pol-o3_8h">O3</span>
+                      <div class="list-item-group-cell pol-o3_8h">
+                        <span class="pollutant-data pol-o3_8h"></span>
+                        <span class="label label-default label-pill pull-xs-right">8h</span>
+                      </div>
+                    </div>
+
+                    <div class="list-item-group">
+                      <span class="list-item-group-addon pollutant-name pol-so2">SO2</span>
+                      <div class="list-item-group-cell pol-so2">
+                        <span class="pollutant-data pol-so2"></span>
+                        <span class="label label-default label-pill pull-xs-right">1h</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-12">
+                  <p class="card-text pull-xs-right"><small class="text-muted">数值单位：μg/m3(CO为mg/m3)</small></p>
+                </div>
+              </div>
+          </div>
+        </li>
+
+      </ul>
+    </div>
+  </div>
+
+  <div class="card weather-card">
+
+    <div class="card-header">
+      天气预报
+      <p class="card-text weather-update-time-text pull-xs-right">
+        <small class="text-muted">更新于 <span class="weather-update-time-data"></span></small>
+      </p>
+    </div>
+
+    <div class="card-content loading">
+      {% include 'pages/home_loader.html' %}
+      <div class="card-block">
+        <div class="container">
+          <div class="row valign-row">
+
+            <div class="col-md-6 valign-row">
+              <!-- Current temperature data -->
+              <h1 class="temp-head-block">
+                <span class="card-title temp-head">
+                  <span class="temp-head-data"></span>º
+                </span>
+              </h1>
+              <div class="cur-weather-block halign-row">
+                <!-- Current weather text -->
+                <div class="cur-weather-text"></div>
+                <!-- Current weather icon -->
+                <i class="wi"></i>
+              </div>
+            </div><!--
+
+            --><div class="col-md-6">
+              <div class="next-day-weather-block valign-row">
+                <div class="next-day-weather-col halign-row">
+                  <div class="next-day-weather-header night"></div>
+                  <div class="next-day-weather-data valign-row">
+                    <i class="wi"></i>
+                    <div class="next-day-weather-text"></div>
+                  </div>
+                </div>
+                <div class="next-day-forecast-col halign-row">
+                  <div class="next-day-weather-header day"></div>
+                  <div class="next-day-weather-data valign-row">
+                    <i class="wi"></i>
+                    <div class="next-day-weather-text"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="row">
+            <div class="col-md-6">
+              <p class="card-text weather-update-weekday-text pull-xs-left">
+                <small class="text-muted weekday-text"></small>
+              </p>
+            </div>
+            <div class="col-md-6">
+              <div class="today-temp-range pull-xs-right">
+                <strong class="weekday-max-temp today-max-temp"></strong>
+                <span class="weekday-max-temp today-min-temp"></span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item">
+          <ul class="hourly-weather-list valign-row">
+            {% comment %}
+              <li class="hourly-weather-item halign-row">
+                <div class="hourly-weather-time"></div>
+                <div class="hourly-weather-temp"><span class="hourly-weather-temp-data"></span>º</div>
+              </li>
+            {% endcomment %}
+          </ul>
+        </li>
+        <li class="list-group-item weekday-weather-list">
+          {% comment %}
+            <div class="row valign-row">
+              <div class="col-md-4">
+                <p class="card-text weather-weekday-text pull-xs-left">
+                  <small class="text-muted weekday-text">周四</small>
+                </p>
+              </div>
+              <div class="col-md-4">
+                <div class="weekday-weather valign-row">
+                  <span class="weekday-weather-text">多云</span>
+                  <i class="wi wi-cloudy"></i>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="weekday-temp-range pull-xs-right">
+                  <strong class="weekday-max-temp">31</strong>
+                  <span class="weekday-min-temp">13</span>
+                </div>
+              </div>
+            </div>
+         {% endcomment %}
+        </li>
+      </ul>
+    </div>
+
+  </div>
+
+</div>
+
+<div class="card" id="city-map">
+  <div class="card-block">
+    <div id="map-{{ city_en }}" class="city-map"></div>
+  </div>
+</div>
+
+<div class="card" id="rank">
+  <div class="card-block">
+    <h4 class="card-title">Card title</h4>
+    <p class="card-text">{{ rank_text }}</p>
+    <a href="#" class="btn btn-primary">Button</a>
+  </div>
+</div>
