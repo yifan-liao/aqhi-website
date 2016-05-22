@@ -107,7 +107,7 @@ class Command(BaseCommand):
                         except ValidationError:
                             self.count_duplicates(station_duplicates, (name_en, station_name))
         except Exception as e:
-            self.stderr.write('Exception raised from {}: {}'.format(file_name, repr(e)))
+            self.stderr.write('Exception raised :{}'.format(repr(e)))
             raise e
 
         # print result

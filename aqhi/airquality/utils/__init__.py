@@ -112,7 +112,7 @@ def get_html_files_from_dir(dir_path, client=None, city_names=None):
         for city_name in city_names[1:]:
             city_pattern += '-o -name "*{}.html" '.format(city_name)
         city_pattern += '\\)'
-    cmd = 'find {} -type f -name "*.html" {}'.format(dir_path, city_pattern)
+    cmd = 'find {} -type f -name *.html {}'.format(dir_path, city_pattern)
 
     if client:
         sftp = client.open_sftp()
