@@ -87,8 +87,9 @@ body
   font-family: "Lato"
   src: url("../fonts/Lato-Light.ttf") format('truetype')
 
-.aqi-head,
-.temp-head
+.aqhi-head,
+.temp-head,
+.aqi-head
   font-family: "Lato", "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif
   font-weight: 300
   font-size: 6rem
@@ -96,8 +97,67 @@ body
 
 /* Overview.air-condition-card */
 .air-condition-card
+  .aqi-head
+    font-size: 2.5rem
+    margin-bottom: 0
+
+  .aqi-title
+    font-size: 1rem
+
+  .aqi-head,
+  .aqi-title
+    text-align: center
+
   .aqi-head + small
     font-size: 50%
+
+  .aqhi-side-col
+    justify-content: space-between
+    margin-left: .5rem
+
+  .aqhi-title
+    font-size: 1.5rem
+
+  .aqhi-level
+    display: inline-block
+    text-align: center
+    border-radius: .25rem
+    padding: .375rem .75rem
+    min-width: 5rem
+    font-size: 1.5rem
+    margin-bottom: 0
+
+  .aqhi-level.aqhi-low
+    background-color: #00e400
+    border-color: #00e400
+
+  .aqhi-level.aqhi-moderate
+    background-color: #ff7e00
+    border-color: #ff7e00
+
+  .aqhi-level.aqhi-high
+    background-color: red
+    border-color: red
+
+  .aqhi-level.aqhi-very-high
+    background-color: #99004c
+    border-color: #99004c
+    color: #fff
+
+  .aqhi-level.aqhi-serious
+    background-color: #7e0023
+    border-color: #7e0023
+    color: #fff
+
+  .people-class
+    background-color: #818a91
+    color: #fff
+    padding: .25rem .6em
+    border-radius: 10rem
+    text-align: center
+    white-space: nowrap
+    font-weight: 700
+    line-height: 1
 
   .pollutant-header
     font-size: 1.25rem
@@ -109,7 +169,7 @@ body
   .pollutant-data
     width: 100%
 
-  .quality-head,
+  .quality-level,
   .primary-pollutant-block,
   .primary-pollutant-list li
     display: inline-block
@@ -124,53 +184,54 @@ body
   display: flex
   align-items: flex-end
 
-  .quality-head
+  .quality-level
     display: inline-block
     text-align: center
     border-radius: .25rem
-    padding: .375rem 1rem
-    min-width: 5rem
-    font-size: 1.5rem
-    margin-bottom: 0
+    padding: 0 0.6rem
+    min-width: 4rem
+    font-size: 1.2rem
+    line-height: 1.5
+    margin-bottom: .5rem
 
-  .quality-head.qlty-excellent
+  .quality-level.qlty-excellent
     background-color: #00e400
     border-color: #00e400
 
-  .quality-head.qlty-good
+  .quality-level.qlty-good
     background-color: yellow
     border-color: yellow
 
-  .quality-head.qlty-lightly
+  .quality-level.qlty-lightly
     background-color: #ff7e00
     border-color: #ff7e00
 
-  .quality-head.qlty-moderately
+  .quality-level.qlty-moderately
     background-color: red
     border-color: red
     color: #fff
 
-  .quality-head.qlty-heavily
+  .quality-level.qlty-heavily
     background-color: #99004c
     border-color: #99004c
     color: #fff
 
-  .quality-head.qlty-severely
+  .quality-level.qlty-severely
     background-color: #7e0023
     border-color: #7e0023
     color: #fff
 
-  .quality-head.qlty-moderately,
-  .quality-head.qlty-lightly,
-  .quality-head.qlty-severely,
-  .quality-head.qlty-heavily
+  .quality-level.qlty-moderately,
+  .quality-level.qlty-lightly,
+  .quality-level.qlty-severely,
+  .quality-level.qlty-heavily
     letter-spacing: -1px
     line-height: 1.1
 
-  .quality-head[class*="qlty-"]
+  .quality-level[class*="qlty-"]
     border-width: 1px
 
-  .primary-pollutant-header
+  .aq-header
     font-size: 0.9rem
 
   .primary-pollutant-block
@@ -187,9 +248,8 @@ body
         padding: 0 0.6rem
 
       li.pol-co
-        background-color: #2f4554
-        border-color: #2f4554
-        color: #fff
+        background-color: #f4e781
+        border-color: #f4e781
 
       li.pol-no2
         background-color: #61a0a8

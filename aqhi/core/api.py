@@ -14,6 +14,8 @@ router.register(r'airquality/station_record', airquality_views.StationRecordView
 
 urlpatterns = [
     url(r'^', include(router.urls)),
+    url(r'^airquality/latest_city_record', airquality_views.LatestCityRecordView.as_view(), name='latest-city-record'),
+    url(r'^airquality/avg_city_record', airquality_views.AverageCityRecordView.as_view(), name='avg-city-record'),
     # get city panel html
     url(r'^core/city_panel_body/$', core_views.CityPanelView.as_view(), name='city-panel-body')
 ]

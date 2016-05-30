@@ -1,22 +1,18 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime, timedelta
+
 import pytz
-import random
-
-from django.test import TestCase
 from django.core.exceptions import ValidationError
+from django.test import TestCase
 
+from aqhi.airquality.tests.utils import random_datetime
+from . import factories
 from ..models import (
     City, Station, CityRecord, StationRecord, EstimatedCityRecord, EstimatedStationRecord,
     CityPrimaryPollutantItem, StationPrimaryPollutantItem,
     EstimatedCityPrimaryPollutantItem, EstimatedStationPrimaryPollutantItem,
     create_city_record
 )
-from . import factories
-
-
-def random_datetime():
-    return datetime(2016, 5, 11, tzinfo=pytz.utc) + timedelta(hours=random.randint(0, 500))
 
 
 class TestCity(TestCase):

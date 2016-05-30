@@ -36,8 +36,6 @@ urlpatterns = [
     url(r'^users/', include("aqhi.users.urls", namespace="users")),
 
     # Your stuff: custom urls includes go here
-    url(r'^manage/', include("aqhi.manage.urls", namespace="manage")),
-    url(r'^airquality/', include("aqhi.airquality.urls", namespace="airquality")),
     url(r'^api/', include("aqhi.core.api", namespace="api")),
     url(r'^api/api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 

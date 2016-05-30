@@ -4,11 +4,9 @@
 #
 # Don't forget to add your pipeline to the ITEM_PIPELINES setting
 # See: http://doc.scrapy.org/en/latest/topics/item-pipeline.html
-from datetime import datetime
 import os
 
 from .items import PageItem
-from aqhi.airquality import extractors
 from aqhi.airquality import utils
 from aqhi.airquality import models
 
@@ -21,17 +19,9 @@ class SavePagePipeline(object):
             page_content = item['page'].decode()
             # save record to database first
             try:
-                info_dict = utils.append_extra_fileds(
-                    extractors.process_parsed_dict(
-                        extractors.parse_info_dict(
-                            extractors.extract_info(page_content)
-                        )
-                    )
-                )
+                info_dict = utils.extract_and_supplement(page_content, city_name)
 
                 try:
-                    info_dict['city']['area_en'] = city_name
-
                     create_status = models.create_city_record(info_dict)
                     record_info = '{name} on {dtm}'.format(name=city_name, dtm=info_dict['update_dtm'])
                     if create_status['success'] == 1:

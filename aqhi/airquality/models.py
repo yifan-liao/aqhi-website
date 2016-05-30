@@ -11,6 +11,7 @@ POLL_MAX_DIGITS = 8
 POLL_DECIMAL_PLACES = 4
 COORD_MAX_DIGITS = 8
 COORD_DECIMAL_PLACES = 4
+DECIMAL_FIELDS = ['aqhi', 'aqi', 'no2', 'co', 'so2', 'o3', 'o3_8h', 'pm2_5', 'pm10']
 
 
 # ===================================================================

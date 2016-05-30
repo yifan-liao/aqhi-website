@@ -42,5 +42,8 @@ DEBUG_TOOLBAR_CONFIG = {
 }
 
 # Your local stuff: Below this line define 3rd party library settings
+# CORS Header
+# ------------------------------------------------------------------------------
+CORS_ORIGIN_ALLOW_ALL = True
 
 

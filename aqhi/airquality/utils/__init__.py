@@ -3,11 +3,23 @@ import math
 import socket
 import subprocess
 from decimal import Decimal
+from statistics import mean
 
 import paramiko
+from django.forms.models import model_to_dict
 
+from .. import extractors
 from .. import models
 from . import buptnet
+
+
+def extract_and_supplement(html_string, city_name_en):
+    """Extract info from web page and add extra field(s)."""
+    info_dict = append_extra_fileds(
+        extractors.process_parsed_dict(extractors.parse_info_dict(extractors.extract_info(html_string)))
+    )
+    info_dict['city']['area_en'] = city_name_en
+    return info_dict
 
 
 def append_extra_fileds(info_dict):
@@ -144,3 +156,62 @@ def list_depth(l):
         return 1 + max(list_depth(item) for item in l)
     else:
         return 0
+
+
+def reduce_to_average_in_hours(city_records, hours=24, fields=None, default=None):
+    """
+    Give an iterable generating CityRecords with continuous datetime, return a list of records reduced to
+    average record dicts of `days` days.
+
+    Assume the interval is one hour. This function will not check the interval of the records.
+    This will sort the records first by update_dtm with descending order.
+
+    :param city_records: CityRecords iterable
+    :param hours: designate how many hours of average, defaults to 24
+    :param fields: a list or a single field name to count
+        This defaults to models.DECIMAL_FIELDS, if one of the fields do not exist, exception will be raised
+        Only selected fields will be returned, but update_dtm will always be returned.
+    :param default: a function returning default value for None value, receiving record and field name as arguments
+    :return: a list of averaged record dicts
+    """
+    if fields is None:
+        fields = models.DECIMAL_FIELDS
+    elif isinstance(fields, str):
+        fields = [fields]
+    fields = [f for f in fields if f in models.DECIMAL_FIELDS]
+
+    res = []
+    records = list(city_records)
+    records.sort(key=lambda record: record.update_dtm, reverse=True)
+    for record_chunk in (
+            records[i:i + hours]
+            for i in range(0, len(records), hours)
+    ):
+        if len(record_chunk) < hours:
+            break
+        reduced = reduce_to_one_record_dict(record_chunk, fields, default)
+        reduced['update_dtm'] = record_chunk[0].update_dtm
+        res.append(reduced)
+
+    return res
+
+
+def reduce_to_one_record_dict(city_records, fields, default=None):
+    res = {}
+
+    for field in fields:
+
+        values = []
+        for rec in city_records:
+            value = getattr(rec, field)
+            if value is None:
+                if default is not None:
+                    value = default(rec, field)
+                    if value is not None:
+                        values.append(value)
+            else:
+                values.append(value)
+
+        res[field] = round(mean(values), models.POLL_DECIMAL_PLACES)
+
+    return res

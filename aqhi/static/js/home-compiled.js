@@ -20,16 +20,81 @@ CountdownLatch.prototype.await = function (callback) {
 var qualityTexts = {
   E: { cls: 'qlty-excellent', text: '优' },
   G: { cls: 'qlty-good', text: '良' },
-  LP: { cls: 'qlty-lightly', text: '轻度<br>污染' },
-  MP: { cls: 'qlty-moderately', text: '中度<br>污染' },
-  HP: { cls: 'qlty-heavily', text: '重度<br>污染' },
-  SP: { cls: 'qlty-severely', text: '严重<br>污染' }
+  LP: { cls: 'qlty-lightly', text: '轻度污染' },
+  MP: { cls: 'qlty-moderately', text: '中度污染' },
+  HP: { cls: 'qlty-heavily', text: '重度污染' },
+  SP: { cls: 'qlty-severely', text: '严重污染' }
+};
+
+var aqhiRange = [4, 7, 8, 11];
+var aqhiTexts = {
+  0: { cls: 'aqhi-low', text: '低' },
+  1: { cls: 'aqhi-moderate', text: '中' },
+  2: { cls: 'aqhi-high', text: '高' },
+  3: { cls: 'aqhi-very-high', text: '较高' },
+  4: { cls: 'aqhi-serious', text: '严重' }
+};
+var aqhiAdviceTextEles = {
+  0: $(`
+    <p class="card-text">
+      所有人员均可正常活动。
+    </p>
+  `),
+  1: $(`
+    <p class="card-text">
+      <span class="people-class">心脏病或呼吸系统疾病患者</span>
+      <br>应<strong>考虑减少</strong>户外体力消耗。
+    </p>
+  `),
+  2: $(`
+    <p class="card-text">
+      <span class="people-class">心脏病或呼吸系统疾病患者</span>
+      <span class="people-class">儿童及老人</span>
+      <br>应<strong>减少</strong>户外体力消耗和户外逗留时间。
+    </p>
+  `),
+  3: $(`
+    <p class="card-text">
+      <span class="people-class">心脏病或呼吸系统疾病患者</span>
+      <span class="people-class">儿童及老人</span>
+      <br>应<strong>尽量减少</strong>户外体力消耗和户外逗留时间。
+    </p>
+    <p class="card-text">
+      <span class="people-class">户外工作人员</span>
+      <span class="people-class">一般市民</span>
+      <br>应<strong>减少</strong>户外体力消耗和户外逗留时间。
+    </p>
+  `),
+  4: $(`
+    <p class="card-text">
+      <span class="people-class">心脏病或呼吸系统疾病患者</span>
+      <span class="people-class">儿童及老人</span>
+      <br>应<strong>避免</strong>户外体力消耗和户外逗留。
+    </p>
+    <p class="card-text">
+      <span class="people-class">户外工作人员</span>
+      <span class="people-class">一般市民</span>
+      <br>应<strong>尽量减少</strong>户外体力消耗和户外逗留时间。
+    </p>
+  `)
 };
 
 var pollutantNames = ['co', 'so2', 'o3', 'o3_8h', 'pm10', 'pm2_5', 'no2'];
+var pollutantAndAqiNames = ['aqi', 'aqhi'].concat(pollutantNames);
+var pollutantAndAqiProperties = {
+  co: { maxValue: 5, color: 'f4e781', label: 'CO' },
+  so2: { maxValue: 50, color: 'bda29a', label: 'SO2' },
+  o3: { maxValue: 400, color: 'd48265', label: 'O3' },
+  o3_8h: { maxValue: 400, color: '91c7aE', label: 'O3/8h' },
+  pm10: { maxValue: 300, color: '749f83', label: 'PM10' },
+  pm2_5: { maxValue: 500, color: 'ca8622', label: 'PM2.5' },
+  no2: { maxValue: 100, color: '61a0a8', label: 'NO2' },
+  aqi: { maxValue: 500, color: 'c23531', label: 'AQI' },
+  aqhi: { maxValue: 12, color: 'cf2abf', label: 'AQHI' }
+};
+
 var primaryPollutantTexts = pollutantNames.reduce(function (prev, name) {
-  var text = name.toUpperCase();
-  if (name == 'o3_8h') text = 'O3/8h';else if (name == 'pm2_5') text = 'PM2.5';
+  var text = pollutantAndAqiProperties[name].label;
   prev[name] = { cls: 'pol-' + name, text: text };
   return prev;
 }, Object.create(null));
@@ -128,21 +193,18 @@ $(function () {
 });
 
 function initCity(cityName, cityPanel) {
-  initCityAirCondition(cityName, cityPanel.find('.air-condition-card'));
-  initCityWeather(cityName, cityPanel);
-  initCityCharts(cityName, cityPanel);
+  $.getJSON('api/airquality/latest_city_record', {
+    city: cityName
+  }).done(function (latestCityRecord) {
+    initRankChart(latestCityRecord.update_dtm);
+    initCityAirCondition(latestCityRecord, cityPanel.find('.air-condition-card'));
+    initCityWeather(latestCityRecord, cityPanel);
+    initStationsMap(latestCityRecord, cityPanel);
+    initCityHistoryChart(latestCityRecord, cityPanel);
+  });
 }
 
-function initCityCharts(cityName, cityPanel) {
-  var myChart = echarts.init(document.getElementById('map-' + cityName));
-  setChartSize(myChart, 0.6);
-
-  $(window).on('resize', function () {
-    setChartSize(myChart, 0.6);
-    myChart.resize();
-  });
-
-  myChart.showLoading();
+function initStationsMap(cityRecord, cityPanel) {
   var option = {
     backgroundColor: '#404a59',
     tooltip: {
@@ -167,6 +229,9 @@ function initCityCharts(cityName, cityPanel) {
       text: ['High', 'Low'],
       inRange: {
         color: ['lightskyblue', 'yellow', 'orangered']
+      },
+      textStyle: {
+        color: '#fff'
       }
     },
     geo: {
@@ -193,6 +258,17 @@ function initCityCharts(cityName, cityPanel) {
     },
     series: []
   };
+
+  var cityName = cityRecord.city.name_en;
+  var myChart = echarts.init(document.getElementById('map-' + cityName));
+  setChartSize(myChart, 0.6);
+  myChart.showLoading();
+
+  $(window).on('resize', function () {
+    setChartSize(myChart, 0.6);
+    myChart.resize();
+  });
+
   // load data
   var loadingLatch = new CountdownLatch(2);
   // load map geo data
@@ -203,24 +279,19 @@ function initCityCharts(cityName, cityPanel) {
   // load map air quality data
   var qualityData;
   $.getJSON('api/airquality/station_record', {
-    latest: 'True',
-    city: cityName
+    city_record: cityRecord.id
   }).done(function (data) {
     qualityData = data.results;
     loadingLatch.countDown();
   });
 
   loadingLatch.await(function () {
-    ['aqi', 'co', 'no2', 'o3', 'o3_8h', 'pm10', 'pm2_5', 'so2'].forEach(function (pollutantName) {
-      var label = pollutantName.toUpperCase();
-      if (pollutantName == 'o3_8h') label = 'O3/8h';else if (pollutantName == 'pm2_5') label = 'PM2.5';
+    pollutantAndAqiNames.forEach(function (pollutantName) {
+      var label = pollutantAndAqiProperties[pollutantName].label;
 
       option.legend.data.push(label);
-      var convertFunc = pollutantName == 'co' ? function (d) {
-        return d;
-      } : parseInt;
       var valueArray = qualityData.map(function (data) {
-        return convertFunc(data[pollutantName]);
+        return parsePollutantOrAqiValue(pollutantName, data[pollutantName]);
       });
 
       option.geo.map = cityName;
@@ -267,45 +338,166 @@ function initCityCharts(cityName, cityPanel) {
   });
 }
 
-function initCityAirCondition(cityEngName, cityAirCard) {
+function initCityHistoryChart(cityRecord, cityPanel) {
+  var option = {
+    backgroundColor: '#404a59',
+    tooltip: {
+      trigger: 'axis'
+    },
+    legend: {
+      data: [], //Legend names
+      selectedMode: 'single'
+    },
+    toolbox: {
+      feature: {
+        saveAsImage: {}
+      }
+    },
+    grid: {
+      left: '3%',
+      right: '4%',
+      bottom: '8%',
+      containLabel: true
+    },
+    xAxis: [{
+      type: 'category',
+      boundaryGap: false,
+      data: [], // hour names
+      axisLabel: { textStyle: { color: '#fff' } },
+      axisLine: { lineStyle: { color: '#fff' } },
+      splitLine: { show: false }
+    }],
+    yAxis: [{
+      type: 'value',
+      axisLine: { lineStyle: { color: '#fff' } },
+      axisLabel: { textStyle: { color: '#fff' } }
+    }],
+    dataZoom: [{
+      type: 'inside',
+      xAxisIndex: [0],
+      start: 50,
+      end: 100,
+      zoomLock: true
+    }, {
+      type: 'slider',
+      xAxisIndex: [0],
+      start: 50,
+      end: 100,
+      zoomLock: true
+    }],
+    series: []
+  };
+
+  var seriesDataTemplate = {
+    name: '',
+    type: 'line',
+    areaStyle: { normal: {} },
+    label: {
+      normal: {
+        show: true,
+        position: 'top'
+      }
+    }
+    // data = []
+  };
+
+  var cityName = cityRecord.city.name_en;
+  var chart = echarts.init(document.getElementById(`history-chart-${ cityName }`));
+  setChartSize(chart, 0.6);
+
+  $(window).on('resize', function () {
+    setChartSize(chart, 0.6);
+    chart.resize();
+  });
+
+  chart.showLoading();
+
+  var pollutantAndAqiSeriesData = pollutantAndAqiNames.reduce(function (obj, name) {
+    var datum = Object.assign({}, seriesDataTemplate);
+    datum.data = [];
+    var label = pollutantAndAqiProperties[name].label;
+    option.legend.data.push(label);
+    datum.name = label;
+    option.series.push(datum);
+
+    obj[name] = datum;
+    return obj;
+  }, Object.create(null));
+  var now = moment.utc(cityRecord.update_dtm);
+  var startDtm = now.clone().subtract(1, 'days');
+  var endDtm = now.clone();
   $.getJSON('api/airquality/city_record', {
-    city: cityEngName,
-    latest: 'True'
-  }).done(function (jsonData) {
-    var record = jsonData.results[0];
+    city: cityName,
+    start_dtm: startDtm.format(),
+    end_dtm: endDtm.format(),
+    limit: 30,
+    ordering: '-update_dtm'
+  }).done(function (data) {
+    var records = data.results;
 
-    var qualityEle = cityAirCard.find('.quality-head');
-    var primaryPolListEle = cityAirCard.find('.primary-pollutant-list');
-    var polDataEles = pollutantNames.reduce(function (prev, name) {
-      prev[name] = cityAirCard.find('.pollutant-data.pol-' + name);
-      return prev;
-    }, Object.create(null));
+    for (var curDtm = startDtm.clone(); curDtm <= endDtm; curDtm.add(1, 'hours')) {
+      option.xAxis[0].data.push(curDtm.isSame(endDtm) ? "现在" : `${ curDtm.hours() }时`);
+      var curRecord = records.find(function (ele) {
+        return moment(ele.update_dtm).isSame(curDtm);
+      });
+      if (curRecord == undefined) {
+        curRecord = pollutantAndAqiNames.reduce(function (rec, name) {
+          rec[name] = '';
+          return rec;
+        }, Object.create(null));
+      }
 
-    cityAirCard.find('.aqi-head').text(parseInt(record.aqi));
-    qualityEle.addClass(qualityTexts[record.quality].cls);
-    qualityEle.html(qualityTexts[record.quality].text);
-    cityAirCard.find('.air-condition-update-time-data').text(moment(record.update_dtm).fromNow());
-
-    var primaryPollutants = record.primary_pollutants;
-    if (record.primary_pollutants.length == 0) primaryPollutants.push({ pollutant: 'NA' });
-    primaryPollutants.forEach(function (pol) {
-      var name = pol.pollutant;
-      $('<li></li>').addClass(primaryPollutantTexts[name].cls).html(primaryPollutantTexts[name].text).appendTo(primaryPolListEle);
-    });
-
-    pollutantNames.forEach(function (name) {
-      var valueString = record[name];
-      if (valueString == '') polDataEles[name].text('——');else polDataEles[name].text(Number(valueString));
-    });
-  }).done(function () {
-    // Hide loading effect
-    hideLoading(cityAirCard.find('.card-content'));
+      pollutantAndAqiNames.forEach(function (name) {
+        var value = parsePollutantOrAqiValue(name, curRecord[name]);
+        if (isNaN(value)) value = '-';
+        pollutantAndAqiSeriesData[name].data.push(value);
+      });
+    }
+    chart.setOption(option);
+    chart.resize();
+    chart.hideLoading();
   });
 }
 
-function initCityWeather(cityEngName, cityPanel) {
+function initCityAirCondition(cityRecord, cityAirCard) {
+  var record = cityRecord;
+
+  var qualityEle = cityAirCard.find('.quality-level');
+  var aqhiEle = cityAirCard.find('.aqhi-level');
+  var primaryPolListEle = cityAirCard.find('.primary-pollutant-list');
+  var polDataEles = pollutantNames.reduce(function (prev, name) {
+    prev[name] = cityAirCard.find('.pollutant-data.pol-' + name);
+    return prev;
+  }, Object.create(null));
+
+  cityAirCard.find('.aqhi-head').text(parseFloat(record.aqhi).toFixed(1));
+  cityAirCard.find('.aqi-head').text(parseInt(record.aqi));
+  qualityEle.addClass(qualityTexts[record.quality].cls);
+  qualityEle.html(qualityTexts[record.quality].text);
+  var aqhiLevel = getAqhiLevel(record.aqhi);
+  aqhiEle.addClass(aqhiTexts[aqhiLevel].cls);
+  aqhiEle.html(aqhiTexts[aqhiLevel].text);
+  cityAirCard.find('.people-advice-text').html(aqhiAdviceTextEles[aqhiLevel]);
+  cityAirCard.find('.air-condition-update-time-data').text(moment(record.update_dtm).fromNow());
+
+  var primaryPollutants = record.primary_pollutants;
+  if (record.primary_pollutants.length == 0) primaryPollutants.push({ pollutant: 'NA' });
+  primaryPollutants.forEach(function (pol) {
+    var name = pol.pollutant;
+    $('<li></li>').addClass(primaryPollutantTexts[name].cls).html(primaryPollutantTexts[name].text).appendTo(primaryPolListEle);
+  });
+
+  pollutantNames.forEach(function (name) {
+    var valueString = record[name];
+    if (valueString == '') polDataEles[name].text('——');else polDataEles[name].text(Number(valueString));
+  });
+
+  hideLoading(cityAirCard.find('.card-content'));
+}
+
+function initCityWeather(cityRecord, cityPanel) {
   // test
-  $.getJSON(`static/weather/test-${ cityEngName }.json`).done(function (jsonData) {
+  $.getJSON(`static/weather/test-${ cityRecord.city.name_en }.json`).done(function (jsonData) {
     var weatherData = jsonData['HeWeather data service 3.0'][0];
     var todayWeatherData = weatherData.daily_forecast[0];
 
@@ -363,6 +555,99 @@ function initCityWeather(cityEngName, cityPanel) {
   });
 }
 
+function initRankChart(dtmString) {
+  var option = {
+    tooltip: {
+      trigger: 'axis',
+      axisPointer: { // 坐标轴指示器，坐标轴触发有效
+        type: 'shadow' // 默认为直线，可选为：'line' | 'shadow'
+      }
+    },
+    grid: {
+      top: '5%',
+      bottom: '5%'
+    },
+    backgroundColor: '#404a59',
+    xAxis: {
+      type: 'value',
+      position: 'top',
+      axisLine: { lineStyle: { color: '#fff' } },
+      splitLine: { lineStyle: { type: 'dashed' } },
+      axisLabel: { textStyle: { color: '#fff' } }
+    },
+    yAxis: {
+      type: 'category',
+      axisLine: { show: false },
+      axisLabel: { show: false },
+      axisTick: { show: false },
+      splitLine: { show: false },
+      data: [] // city names
+    },
+    dataZoom: [{
+      type: 'inside',
+      yAxisIndex: [0],
+      startValue: 0,
+      endValue: 5,
+      zoomLock: true
+    }, {
+      type: 'slider',
+      yAxisIndex: [0],
+      startValue: 0,
+      endValue: 5,
+      zoomLock: true
+    }],
+    series: []
+  };
+  var seriesDataTemplate = {
+    name: '',
+    type: 'bar',
+    label: {
+      normal: {
+        show: true,
+        formatter: '{b}'
+      }
+    }
+    // data: []
+  };
+
+  var chart = echarts.init(document.getElementById('rank-chart'));
+  setChartSize(chart, 0.6);
+  chart.resize();
+
+  $(window).on('resize', function () {
+    setChartSize(chart, 0.6);
+    chart.resize();
+  });
+
+  chart.showLoading();
+  // AQHI Rank
+  var aqhiSeriesData = Object.assign({}, seriesDataTemplate);
+  aqhiSeriesData.name = 'AQHI';
+  aqhiSeriesData.data = [];
+  option.series.push(aqhiSeriesData);
+  $.getJSON('api/airquality/city_record', {
+    update_dtm: dtmString,
+    ordering: '-aqhi',
+    limit: 50,
+    fields: 'aqhi,city__name_cn'
+  }).done(function (data) {
+    var records = data.results;
+
+    records.forEach(function (record) {
+      option.yAxis.data.push(record.city.name_cn);
+      aqhiSeriesData.data.push(parsePollutantOrAqiValue('aqhi', record.aqhi));
+    });
+
+    option.dataZoom.forEach(function (dataZoomItem) {
+      dataZoomItem.startValue = records.length - 1;
+      dataZoomItem.endValue = Math.max(dataZoomItem.startValue - 5, 0);
+    });
+
+    chart.setOption(option);
+    chart.hideLoading();
+  });
+}
+
 function getCurDatetime(utcOffset, string) {
   return moment(string).utcOffset(utcOffset).local();
 }
@@ -413,6 +698,21 @@ function setChartSize(chart, ratio) {
     width: containerWidth,
     height: containerWidth * ratio
   });
+}
+
+function getAqhiLevel(indexString) {
+  var indexValue = parseFloat(indexString);
+  var level = 0;
+  for (let value of aqhiRange) {
+    if (indexValue < value) break;
+    level += 1;
+  }
+  return level;
+}
+
+function parsePollutantOrAqiValue(name, valueString, decimalPlaces) {
+  decimalPlaces = typeof decimalPlaces !== 'undefined' ? decimalPlaces : 2;
+  if (['co', 'aqhi'].indexOf(name) == -1) return parseInt(valueString);else return parseFloat(parseFloat(valueString).toFixed(decimalPlaces));
 }
 
 //# sourceMappingURL=home-compiled.js.map

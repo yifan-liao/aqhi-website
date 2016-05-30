@@ -4,7 +4,9 @@ import collections
 
 from django.test import SimpleTestCase
 from django.core.urlresolvers import reverse
-from rest_framework.test import APITestCase
+from django.forms.models import model_to_dict
+from rest_framework.test import APITestCase, APIRequestFactory
+from rest_framework import status
 
 from . import factories
 from .. import serializers, views
@@ -174,3 +176,37 @@ class FilterFieldsSerializerMixinTest(SimpleTestCase):
         views.FilterFieldsMixin._filter_instance(instance, filter_dict, res)
         self.assertEqual(res, {'url': 'url_a', 'id': 12, 'a': 'a', 'b': {'url': 'foo', 'id': 10, 'a': 'ba', 'b': 'bb', 'c': 'bc'}})
 
+
+class LatestCityRecordTestCase(APITestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        super(LatestCityRecordTestCase, cls).setUpClass()
+        cls.factory = APIRequestFactory()
+        cls.url_name = 'api:latest-city-record'
+
+    def get_latest_city_record(self, params=None):
+        if params is None:
+            params = {}
+        return self.client.get(patch_params_to_url(reverse(self.url_name), params))
+
+    def serialize_city_record(self, record):
+        return serializers.CityRecordSerializer(record,
+                                                context={'request': self.factory.get(reverse(self.url_name))}).data
+
+    def test_get_without_existing_records(self):
+        resp = self.get_latest_city_record({'city': 'beijing'})
+        self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_get_not_existing_city(self):
+        factories.CityRecordFactory()
+
+        resp = self.get_latest_city_record({'city': 'beijing'})
+        self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_get_record(self):
+        record = factories.CityRecordFactory()
+
+        resp = self.get_latest_city_record({'city': record.city.name_en})
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        self.assertEqual(resp.data, self.serialize_city_record(record))

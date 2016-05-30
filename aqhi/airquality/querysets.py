@@ -26,6 +26,9 @@ class CityRecordQuerySet(dj_models.QuerySet):
     def latests(self):
         return self.filter(update_dtm=self.latest().update_dtm)
 
+    def latest_record_in(self, name_en):
+        return self.filter(city__name_en=name_en).latest()
+
 
 class StationRecordQuerySet(dj_models.QuerySet):
     def recorded_in(self, city=None, name_en=None, name_cn=None):

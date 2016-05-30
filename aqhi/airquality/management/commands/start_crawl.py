@@ -6,10 +6,9 @@ import pytz
 
 from scrapy.signals import engine_started, engine_stopped
 from scrapy.crawler import CrawlerProcess
-from scrapy.settings import Settings
-from scrapy.utils.project import ENVVAR
+from scrapy.utils.project import get_project_settings
 from pydispatch import dispatcher
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
 
 from aqhi.airquality.crawler.pm25in.spiders.pm25in_spider import AQISpider
 from aqhi.airquality.utils import buptnet
@@ -114,9 +113,7 @@ class Command(BaseCommand):
         dispatcher.connect(engine_started_handler, engine_started)
         dispatcher.connect(engine_stopped_handler, engine_stopped)
 
-        proj_settings = Settings()
-        module = os.environ.get(ENVVAR)
-        proj_settings.setmodule(module, priority='project')
+        proj_settings = get_project_settings()
         proj_settings.set('LOG_FILE', log_file_path)
         process = CrawlerProcess(proj_settings)
         process.crawl(AQISpider, res_dir=root_dir, logger=crawler_logger, page_num=options['page_num'])

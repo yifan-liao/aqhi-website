@@ -22,9 +22,15 @@
     {% endfor %}
   </div>
 
-  <footer class="primary-footer">
-    <small>&copy; AQHI Web</small>
-  </footer>
+  <div class="card" id="rank">
+    <div class="card-header">
+      实时AQHI排名
+    </div>
+    <div class="card-block">
+      <div id="rank-chart"></div>
+    </div>
+  </div>
+
 {% endblock %}
 
 {% block javascript %}

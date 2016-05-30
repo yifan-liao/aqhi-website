@@ -46,6 +46,7 @@ DJANGO_APPS = (
 THIRD_PARTY_APPS = (
     'crispy_forms',  # Form layouts
     'rest_framework',
+    'corsheaders',
 )
 
 # Apps specific for this project go here.
@@ -63,6 +64,7 @@ INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 MIDDLEWARE_CLASSES = (
     # Make sure django.middleware.security.SecurityMiddleware is listed first
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',

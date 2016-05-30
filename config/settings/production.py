@@ -54,3 +54,6 @@ DATABASES['default'] = env.db("DATABASE_URL")
 # ADMIN_URL = env('DJANGO_ADMIN_URL')
 
 # Your production stuff: Below this line define 3rd party library settings
+CORS_ORIGIN_WHITELIST = (
+    '127.0.0.1',
+)

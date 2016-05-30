@@ -1,18 +1,18 @@
+{%  extends 'base.html' %}
 {% load staticfiles %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Jasmine test page for home.js</title>
-
+{% block stylesheets %}
+  {{  block.super }}
+  <link href="{% static 'css/home.css' %}" rel="stylesheet">
   <link rel="shortcut icon" type="image/png" href="{% static 'lib/jasmine-standalone-2.4.1/lib/jasmine-2.4.1/jasmine_favicon.png' %}">
   <link rel="stylesheet" type="text/css" href="{% static 'lib/jasmine-standalone-2.4.1/lib/jasmine-2.4.1/jasmine.css'%}">
-</head>
-<body>
+{%  endblock %}
+{% block javascript %}
+  {{  block.super }}
+  <script src="{% static 'lib/moment-2.13.0/moment-with-locales.min.js' %}"></script>
+  <script src="{% static 'lib/echarts-3.1.9.min.js' %}"></script>
   <script type="text/javascript" src="{% static 'lib/jasmine-standalone-2.4.1/lib/jasmine-2.4.1/jasmine.js'%}"></script>
   <script type="text/javascript" src="{% static 'lib/jasmine-standalone-2.4.1/lib/jasmine-2.4.1/jasmine-html.js'%}"></script>
   <script type="text/javascript" src="{% static 'lib/jasmine-standalone-2.4.1/lib/jasmine-2.4.1/boot.js'%}"></script>
-  <script type="text/javascript" src="{% static 'js/home.js' %}"></script>
-  <script type="text/javascript" src="{% static 'js/test_home.js' %}"></script>
-</body>
-</html>
+  <script type="text/javascript" src="{% static 'js/home-compiled.js' %}"></script>
+  <script type="text/javascript" src="{% static 'js/test_home-compiled.js' %}"></script>
+{% endblock %}

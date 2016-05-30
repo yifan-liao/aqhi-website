@@ -13,19 +13,25 @@
         <div class="container">
 
           <div class="row valign-row">
-            <div class="col-md-5">
+            <div class="col-md-6 valign-row">
               <!-- AQI data -->
               <h1 class="card-title">
-                <span class="aqi-head"></span>
-                <small class="text-muted">AQI</small>
+                <span class="aqhi-head"></span>
               </h1>
+              <div class="halign-row aqhi-side-col">
+                <h2 class="aqhi-title text-muted">AQHI</h2>
+                <p class="aqhi-level"></p>
+              </div>
             </div>
-            <div class="col-md-7">
-              <div class="qlty-and-plt-block">
-                <!-- Quality data -->
-                <h2 class="quality-head"></h2>
+            <div class="col-md-6">
+              <div class="qlty-and-plt-block valign-row">
+                <!-- Quality level, AQI and primary pollutants -->
+                <div class="aqi-main-col">
+                  <p class="aqi-head"></p>
+                  <h2 class="aqi-title text-muted">AQI</h2>
+                </div>
                 <div class="primary-pollutant-block">
-                  <div class="primary-pollutant-header">首要污染物</div>
+                  <p class="quality-level"></p>
                   <!-- Primary Pollutant data list -->
                   <ul class="primary-pollutant-list">
                   </ul>
@@ -38,6 +44,27 @@
       </div>
 
       <ul class="list-group list-group-flush">
+
+        <li class="list-group-item">
+          <div class="container">
+            <h2 class="pollutant-header card-title">健康建议</h2>
+            <div class="people-advice-text">
+              {% comment %}
+                <p class="card-text">
+                  <span class="people-class">心脏病或呼吸系统疾病患者</span>
+                  <span class="people-class">儿童及老人</span>
+                  <br>应<strong>尽量减少</strong>户外体力消耗和户外逗留时间。
+                </p>
+                <p class="card-text">
+                  <span class="people-class">户外工作人员</span>
+                  <span class="people-class">一般市民</span>
+                  <br>应<strong>减少</strong>户外体力消耗和户外逗留时间。
+                </p>
+              {% endcomment %}
+            </div>
+          </div>
+        </li>
+
         <li class="list-group-item">
             <div class="container">
 
@@ -230,15 +257,19 @@
 </div>
 
 <div class="card" id="city-map">
+  <div class="card-header">
+    监测点空气质量
+  </div>
   <div class="card-block">
     <div id="map-{{ city_en }}" class="city-map"></div>
   </div>
 </div>
 
-<div class="card" id="rank">
+<div class="card" id="city-history">
+  <div class="card-header">
+    24小时历史趋势
+  </div>
   <div class="card-block">
-    <h4 class="card-title">Card title</h4>
-    <p class="card-text">{{ rank_text }}</p>
-    <a href="#" class="btn btn-primary">Button</a>
+    <div id="history-chart-{{ city_en }}" class="city-map"></div>
   </div>
 </div>

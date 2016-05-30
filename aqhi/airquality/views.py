@@ -1,7 +1,11 @@
 import copy
 
-from rest_framework import viewsets
+from django.http import Http404
+
+from rest_framework import viewsets, generics
 from rest_framework import filters as drf_filters
+from rest_framework.views import APIView
+from rest_framework.response import Response
 from rest_framework.utils.serializer_helpers import ReturnDict
 
 from . import models, serializers, filters
@@ -110,6 +114,42 @@ class CityRecordViewSet(FilterFieldsMixin, viewsets.ReadOnlyModelViewSet):
     serializer_class = serializers.CityRecordSerializer
     filter_backends = (drf_filters.DjangoFilterBackend, )
     filter_class = filters.CityRecordFilter
+
+
+# Latest city record view
+# -------------------------------------------------------------------
+class LatestCityRecordView(FilterFieldsMixin, generics.RetrieveAPIView):
+    queryset = models.CityRecord.objects.all()
+    serializer_class = serializers.CityRecordSerializer
+
+    def get_object(self):
+        queryset = self.get_queryset()
+
+        city_en = self.request.query_params['city']
+        try:
+            obj = queryset.latest_record_in(city_en)
+        except queryset.model.DoesNotExist:
+            raise Http404('No city records found.')
+        if obj is None:
+            raise Http404('City {} not found.'.format(city_en))
+
+        return obj
+
+
+# Average city record view
+# -------------------------------------------------------------------
+class AverageCityRecordView(APIView):
+
+    def get(self, request, *args, **kwargs):
+        params = request.query_params
+        city = params.get('city', None)
+        city_cn = params.get('city_cn', None)
+        start_dtm = params.get('start_dtm', None)
+        end_dtm = params.get('end_dtm', None)
+        hours = params.get('hours', None)
+        avg_field = params.get('avg_field', None)
+
+        return Response()
 
 
 # StationRecord ViewSet

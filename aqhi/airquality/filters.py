@@ -63,29 +63,33 @@ class CityRecordFilter(filters.FilterSet):
     update_dtm = django_filters.IsoDateTimeFilter()
     start_dtm = django_filters.IsoDateTimeFilter(name='update_dtm', lookup_expr='gte')
     end_dtm = django_filters.IsoDateTimeFilter(name='update_dtm', lookup_expr='lte')
-    city = CommaSeperatedMultipleCharFilter()
+    city = CommaSeperatedMultipleCharFilter(name='city__name_en')
     city_cn = django_filters.CharFilter(name='city__name_cn')
-    latest = django_filters.BooleanFilter(False, action=lambda qs, v: qs.latests() if v else qs)
 
     order_by_field = 'ordering'
 
     class Meta:
         model = models.CityRecord
-        fields = ['aqi', 'aqhi']
-        order_by = ['-update_dtm', 'aqhi', 'aqi']
+        fields = ['id']
+        order_by = ['update_dtm', '-update_dtm',
+                    'aqhi', '-aqhi', 'aqi', '-aqi', 'no2', '-no2', 'co', '-co', 'so2', '-so2',
+                    'pm2_5', '-pm2_5', 'pm10', '-pm10', 'o3', '-o3', 'o3_8h', '-o3_8h']
 
 
 class StationRecordFilter(filters.FilterSet):
     update_dtm = django_filters.IsoDateTimeFilter(name='city_record__update_dtm')
     start_dtm = django_filters.IsoDateTimeFilter(name='city_record__update_dtm', lookup_expr='gte')
     end_dtm = django_filters.IsoDateTimeFilter(name='city_record__update_dtm', lookup_expr='lte')
-    latest = django_filters.BooleanFilter(False, action=lambda qs, v: qs.latests() if v else qs)
+    city = django_filters.CharFilter(name='city_record__city__name_en')
+    city_cn = django_filters.CharFilter(name='city_record__city__name_cn')
 
     order_by_field = 'ordering'
 
     class Meta:
         model = models.StationRecord
-        fields = ['city_record', 'aqi', 'aqhi']
-        order_by = ['-update_dtm', 'aqhi', 'aqi']
+        fields = ['city_record', 'id']
+        order_by = ['-update_dtm', 'update_dtm',
+                    'aqhi', '-aqhi', 'aqi', '-aqi', 'no2', '-no2', 'co', '-co', 'so2', '-so2',
+                    'pm2_5', '-pm2_5', 'pm10', '-pm10', 'o3', '-o3', 'o3_8h', '-o3_8h']
 
 

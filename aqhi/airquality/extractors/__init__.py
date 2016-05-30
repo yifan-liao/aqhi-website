@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 # These are tools to extract info from web page.
-# Most of the functions accept an lxml.html.HtmlElement instance as argument, which can be
-# returned by lxml.html.fromstring(...) or lxml.html.parse(...).getroot()
 import re
 import decimal
 import copy
@@ -13,7 +11,6 @@ import lxml.html as html
 from .utils import (
     aggregate_keys_with_one_freq, calc_freq,
 )
-from aqhi.airquality.utils import list_depth
 from . import rules
 
 
@@ -107,6 +104,7 @@ def parse_info_dict(info_dict, info_patterns=rules.info_patterns, consts_mapping
 
     All lists with only one string value will be flattened. (only flat one level)
     """
+    from aqhi.airquality.utils import list_depth
     zh_name_pattern = re.compile(r"[0-9a-z\uff00-\uffef\u4e00-\u9fff ]+", re.I)
     dtm_fmt = '%Y-%m-%d %H:%M:%S'
     shanghai = pytz.timezone('Asia/Shanghai')

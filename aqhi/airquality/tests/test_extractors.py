@@ -10,7 +10,7 @@ from django.test import SimpleTestCase
 import aqhi.airquality.utils
 from .. import extractors
 from ..extractors import ssh_exception
-from .test_models import random_datetime
+from aqhi.airquality.tests.utils import random_datetime
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
 

@@ -31,3 +31,6 @@ scrapy==1.1.0
 # buptnet
 lxml==3.6.0
 requests==2.9.1
+
+# CORS
+django-cors-headers==1.1.0

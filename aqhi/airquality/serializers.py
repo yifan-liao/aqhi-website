@@ -68,3 +68,26 @@ class StationRecordSerializer(serializers.HyperlinkedModelSerializer):
         }
 
 
+# AvgCityRecord Serializer
+# -------------------------------------------------------------------
+class AverageCityRecordSerializer(serializers.Serializer):
+
+    datetime = serializers.DateTimeField(read_only=True)
+    aqhi = serializers.DecimalField(max_digits=models.POLL_MAX_DIGITS, decimal_places=models.POLL_DECIMAL_PLACES,
+                                    required=False, read_only=True)
+    aqi = serializers.DecimalField(max_digits=models.POLL_MAX_DIGITS, decimal_places=models.POLL_DECIMAL_PLACES,
+                                   required=False, read_only=True)
+    co = serializers.DecimalField(max_digits=models.POLL_MAX_DIGITS, decimal_places=models.POLL_DECIMAL_PLACES,
+                                  required=False, read_only=True)
+    no2 = serializers.DecimalField(max_digits=models.POLL_MAX_DIGITS, decimal_places=models.POLL_DECIMAL_PLACES,
+                                   required=False, read_only=True)
+    so2 = serializers.DecimalField(max_digits=models.POLL_MAX_DIGITS, decimal_places=models.POLL_DECIMAL_PLACES,
+                                   required=False, read_only=True)
+    o3 = serializers.DecimalField(max_digits=models.POLL_MAX_DIGITS, decimal_places=models.POLL_DECIMAL_PLACES,
+                                  required=False, read_only=True)
+    o3_8h = serializers.DecimalField(max_digits=models.POLL_MAX_DIGITS, decimal_places=models.POLL_DECIMAL_PLACES,
+                                     required=False, read_only=True)
+    pm10 = serializers.DecimalField(max_digits=models.POLL_MAX_DIGITS, decimal_places=models.POLL_DECIMAL_PLACES,
+                                    required=False, read_only=True)
+    pm2_5 = serializers.DecimalField(max_digits=models.POLL_MAX_DIGITS, decimal_places=models.POLL_DECIMAL_PLACES,
+                                     required=False, read_only=True)
