@@ -98,6 +98,14 @@ FIXTURE_DIRS = (
 # See: https://docs.djangoproject.com/en/1.9/ref/settings/#admins
 # Blank
 
+# CACHING
+# ------------------------------------------------------------------------------
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+        'LOCATION': '127.0.0.1:11211'
+    }
+}
 
 # DATABASE CONFIGURATION
 # ------------------------------------------------------------------------------
@@ -252,7 +260,8 @@ REST_FRAMEWORK = {
         'rest_framework.filters.DjangoFilterBackend',
     ),
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
-    'PAGE_SIZE': 100
+    'PAGE_SIZE': 100,
+    'DEFAULT_CACHE_ERRORS': False
 }
 
 # Scrapy setting

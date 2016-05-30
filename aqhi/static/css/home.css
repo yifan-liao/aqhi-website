@@ -186,14 +186,6 @@ body {
     background-color: #7e0023;
     border-color: #7e0023;
     color: #fff; }
-  .air-condition-card .qlty-and-plt-block .quality-level.qlty-moderately,
-  .air-condition-card .qlty-and-plt-block .quality-level.qlty-lightly,
-  .air-condition-card .qlty-and-plt-block .quality-level.qlty-severely,
-  .air-condition-card .qlty-and-plt-block .quality-level.qlty-heavily {
-    letter-spacing: -1px;
-    line-height: 1.1; }
-  .air-condition-card .qlty-and-plt-block .quality-level[class*="qlty-"] {
-    border-width: 1px; }
   .air-condition-card .qlty-and-plt-block .aq-header {
     font-size: 0.9rem; }
   .air-condition-card .qlty-and-plt-block .primary-pollutant-block {

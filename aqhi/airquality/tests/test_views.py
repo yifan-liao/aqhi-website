@@ -4,7 +4,6 @@ import collections
 
 from django.test import SimpleTestCase
 from django.core.urlresolvers import reverse
-from django.forms.models import model_to_dict
 from rest_framework.test import APITestCase, APIRequestFactory
 from rest_framework import status
 
@@ -210,3 +209,12 @@ class LatestCityRecordTestCase(APITestCase):
         resp = self.get_latest_city_record({'city': record.city.name_en})
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         self.assertEqual(resp.data, self.serialize_city_record(record))
+
+    def test_cache(self):
+        city = factories.CityFactory()
+        record1 = factories.CityRecordFactory(city=city)
+
+        resp = self.get_latest_city_record({'city': city.name_en})
+        record2 = factories.CityRecordFactory(city=city)
+
+        self.assertLess(record1.update_dtm, record2.update_dtm)
