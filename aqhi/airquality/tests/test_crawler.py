@@ -44,20 +44,17 @@ class SavePagePipelineTestCase(TestCase):
         self.mock_logger = mock.create_autospec(logging.root)
 
     @mock.patch('aqhi.airquality.crawler.pm25in.pipelines.open')
-    @mock.patch('aqhi.airquality.models.create_city_record', autospec=True)
-    @mock.patch('aqhi.airquality.utils.extract_and_supplement', autospec=True)
-    def test_pipe(self, mock_ext_and_sup, mock_create_rec, mock_open):
+    @mock.patch('aqhi.airquality.utils.parse_and_create_records_from_html', autospec=True)
+    def test_pipe(self, mock_parse_and_create, mock_open):
         info_dict = factories.InfoDictFactory()
-        mock_ext_and_sup.return_value = info_dict
-        mock_create_rec.return_value = {'success': 1, 'info': factories.CityRecordFactory()}
+        mock_parse_and_create.return_value = (info_dict, {'success': 1, 'info': factories.CityRecordFactory()})
 
         res_dir = 'path'
         item = PageItem(name='city', page=b'abcd')
         spider = AQISpider(res_dir, self.mock_logger, 0)
 
         SavePagePipeline().process_item(item, spider)
-        mock_ext_and_sup.assert_called_once_with('abcd', 'city')
-        mock_create_rec.assert_called_once_with(info_dict)
+        mock_parse_and_create.assert_called_once_with('abcd', 'city')
         mock_open.assert_called_once_with('path/city.html', 'wb')
         self.assertEqual(self.mock_logger.info.call_count, 2)
         self.mock_logger.info.assert_any_call('Successfully save a record: {}'.format('{name} on {dtm}'.format(name='city', dtm=info_dict['update_dtm'])))

@@ -9,16 +9,15 @@ from aqhi.airquality import models
 
 
 def update_record(record, override=False):
-    if record.pm10 and record.no2:
-        if record.aqhi is None or override:
-            record.aqhi = utils.calculate_aqhi_in_decimal(record.pm10, record.no2, models.POLL_DECIMAL_PLACES)
-            record.save()
-            return True
+    if record.aqhi is None or override:
+        record.aqhi = record.calculate_aqhi_field()
+        record.save()
+        return True
     return False
 
 
 class Command(BaseCommand):
-    help = """Update current database: calculate aqhi to replace null values. \n
+    help = """Update current database: update aqhi field in CityRecord and StationRecord models. \n
            Ignore existing aqhi by default."""
 
     def add_arguments(self, parser):

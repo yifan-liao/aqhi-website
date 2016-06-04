@@ -190,14 +190,6 @@ class TestExtractInfo(SimpleTestCase):
             [['玉树县结古镇', '36', '优', '_', '8', '36', '1.207', '5', '17', '44', '3']]
         )
 
-    def test_index_error(self):
-        import pprint
-        with open(os.path.join(dir_path, 'files/guangzhou-index-error.html')) as f:
-            html_string = f.read()
-
-        info_dict = extractors.extract_info(self.html_string)
-        pprint.pprint(info_dict)
-
 
 class TestParseInfoDict(SimpleTestCase):
 

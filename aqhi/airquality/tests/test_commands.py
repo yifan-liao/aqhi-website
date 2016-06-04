@@ -9,16 +9,6 @@ from . import factories
 from .. import models
 
 
-class TestPrintFreq(TestCase):
-
-    def test_cmd_output(self):
-        out = io.StringIO()
-        call_command('print_freq',
-                     ssh=True, pages_dir="yifan@10.103.248.78:/media/Documents/pm25in-pages/2016-05-06-13-30-01",
-                     password='Ub1881200', stdout=out)
-        print(out.getvalue())
-
-
 class TestAddCoordinates(TestCase):
 
     def test_add_coord_with_coord_none(self):

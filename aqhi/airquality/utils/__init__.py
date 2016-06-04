@@ -3,63 +3,61 @@ import math
 import socket
 import subprocess
 from decimal import Decimal
-from statistics import mean
+from statistics import mean, StatisticsError
 
 import paramiko
-from django.forms.models import model_to_dict
 
 from .. import extractors
 from .. import models
 from . import buptnet
 
 
-def extract_and_supplement(html_string, city_name_en):
-    """Extract info from web page and add extra field(s)."""
-    info_dict = append_extra_fileds(
-        extractors.process_parsed_dict(extractors.parse_info_dict(extractors.extract_info(html_string)))
-    )
+def parse_and_create_records_from_html(html_string, city_name_en):
+    info_dict = extractors.process_parsed_dict(extractors.parse_info_dict(extractors.extract_info(html_string)))
     info_dict['city']['area_en'] = city_name_en
-    return info_dict
+    create_status = models.create_city_record(info_dict)
+    if create_status['success'] == 1:
+        record = create_status['info']
+        record.aqhi = record.calculate_aqhi_field()
+        record.save()
+    return info_dict, create_status
 
 
-def append_extra_fileds(info_dict):
-    return append_aqhi_field(info_dict)
+pollutant_coeffs = dict(
+    no2=0.0004462559,
+    so2=0.0001393235,
+    o3=0.0005116328,
+    pm10=0.0002821751,
+    pm2_5=0.0002180567
+)
+
+ar_breakpoints = [
+    1.88, 3.76, 5.64, 7.52, 9.41, 11.29, 12.91, 15.07, 17.22, 19.37, float('inf')
+]
 
 
-def calculate_aqhi(pm10, no2):
-    return 10 / 16.4 * 100 * (math.exp(0.00019 * pm10) - 1 + math.exp(0.00061 * no2) - 1)
+def calculate_pollutant_ar(avg_3h, coeff):
+    return (math.exp(coeff * avg_3h) - 1) * 100
 
 
-def calculate_aqhi_in_decimal(pm10_decimal, no2_decimal, prec=None):
-    return Decimal(str(
-        round(calculate_aqhi(float(pm10_decimal), float(no2_decimal)), prec)
+def calculate_aqhi(pm10_3h, pm25_3h, no2_3h, so2_3h, o3_3h):
+    pm10_ar = calculate_pollutant_ar(pm10_3h, pollutant_coeffs['pm10'])
+    pm25_ar = calculate_pollutant_ar(pm25_3h, pollutant_coeffs['pm2_5'])
+    pm_ar = max(pm10_ar, pm25_ar)
+    no2_ar = calculate_pollutant_ar(no2_3h, pollutant_coeffs['no2'])
+    so2_ar = calculate_pollutant_ar(so2_3h, pollutant_coeffs['so2'])
+    o3_ar = calculate_pollutant_ar(o3_3h, pollutant_coeffs['o3'])
+
+    ar = no2_ar + so2_ar + o3_ar + pm_ar
+    for i, breakpoint in enumerate(ar_breakpoints):
+        if ar <= breakpoint:
+            return i + 1
+
+
+def calculate_aqhi_in_decimal(pm10_3h_dec, pm25_3h_dec, no2_3h_dec, so2_3h_dec, o3_3h_dec):
+    return Decimal(calculate_aqhi(
+        float(pm10_3h_dec), float(pm25_3h_dec), float(no2_3h_dec), float(so2_3h_dec), float(o3_3h_dec)
     ))
-
-
-def append_aqhi_field(info_dict):
-    """
-    Add aqhi value to the dict returned by extractors.process_parsed_dict.
-    The precision is equal to the setting in models.
-
-    :param info_dict: a dict full of info
-    :return: the appended dict
-    """
-    prec = models.POLL_DECIMAL_PLACES
-    for _, station_record in info_dict['stations'].items():
-        station_record['aqhi'] = None
-        pm10 = station_record['pm10']
-        no2 = station_record['no2']
-        if pm10 and no2:
-            station_record['aqhi'] = calculate_aqhi_in_decimal(pm10, no2, prec)
-
-    city_record = info_dict['city']
-    city_record['aqhi'] = None
-    pm10 = city_record['pm10']
-    no2 = city_record['no2']
-    if pm10 and no2:
-        city_record['aqhi'] = calculate_aqhi_in_decimal(pm10, no2, prec)
-
-    return info_dict
 
 
 def get_ssh_client(hostname, username, password=None, port=22, timeout=5, log_file=None):
@@ -160,17 +158,20 @@ def list_depth(l):
 
 def reduce_to_average_in_hours(city_records, hours=24, fields=None, default=None):
     """
-    Give an iterable generating CityRecords with continuous datetime, return a list of records reduced to
+    Give an iterable generating CityRecords with ascending datetime, return a list of records reduced to
     average record dicts of `days` days.
 
     Assume the interval is one hour. This function will not check the interval of the records.
     This will sort the records first by update_dtm with descending order.
 
+    If there is any none value, it will be ignored when calculating average. Only if all values of a field is none,
+    the field in the result is none.
+
     :param city_records: CityRecords iterable
     :param hours: designate how many hours of average, defaults to 24
     :param fields: a list or a single field name to count
         This defaults to models.DECIMAL_FIELDS, if one of the fields do not exist, exception will be raised
-        Only selected fields will be returned, but update_dtm will always be returned.
+        Only selected fields will be included, but update_dtm will always be included.
     :param default: a function returning default value for None value, receiving record and field name as arguments
     :return: a list of averaged record dicts
     """
@@ -189,14 +190,14 @@ def reduce_to_average_in_hours(city_records, hours=24, fields=None, default=None
     ):
         if len(record_chunk) < hours:
             break
-        reduced = reduce_to_one_record_dict(record_chunk, fields, default)
+        reduced = reduce_to_one_record_dict(record_chunk, fields, True, default)
         reduced['update_dtm'] = record_chunk[0].update_dtm
         res.append(reduced)
 
     return res
 
 
-def reduce_to_one_record_dict(city_records, fields, default=None):
+def reduce_to_one_record_dict(city_records, fields, _round=True, default=None):
     res = {}
 
     for field in fields:
@@ -212,6 +213,10 @@ def reduce_to_one_record_dict(city_records, fields, default=None):
             else:
                 values.append(value)
 
-        res[field] = round(mean(values), models.POLL_DECIMAL_PLACES)
+        if len(values) == 0:
+            res[field] = None
+        else:
+            mean_value = mean(values)
+            res[field] = round(mean_value, models.POLL_DECIMAL_PLACES) if _round else mean_value
 
     return res

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime, timedelta
+from decimal import Decimal
 
 import pytz
 from django.core.exceptions import ValidationError
@@ -130,6 +131,33 @@ class TestCityRecord(TestCase):
             list(latests),
             [latest_city1, latest_city2],
         )
+
+    def test_calc_aqhi_field(self):
+        fields = ['pm10', 'pm2_5', 'so2', 'no2', 'o3']
+        data = [
+            [[426, 473, 495], [133, 141, 140], [2, 2, 2], [9, 8, 9], [86, 93, 93], 10],
+        ]
+        data_values = []
+        for data_row in data:
+            data_row = data_row[:-1]
+            lines = []
+            for j in range(len(data_row[0])):
+                lines.append([line[j] for line in data_row])
+            data_values.append(lines)
+
+        dtm_now = random_datetime(hour_delta=0)
+        city = factories.CityFactory()
+        for i, values in enumerate(data_values):
+            records = []
+            j = -1
+            for j, row in enumerate(values):
+                records.append(factories.CityRecordFactory(
+                    city=city,
+                    **dict(zip(fields, list(map(Decimal, row))))
+                ))
+
+            self.assertEqual(records[0].calculate_aqhi_field(), data[i][-1])
+            dtm_now += timedelta(hours=j+1)
 
 
 class TestEstimatedCityRecord(TestCase):
@@ -278,6 +306,60 @@ class TestStationRecord(TestCase):
             list(latests),
             [latest_record],
         )
+
+    def test_calc_aqhi_field(self):
+        fields = ['pm10', 'pm2_5', 'so2', 'no2', 'o3']
+        data = [
+            [[605, 579, 592], [236, 296, 238], [7, 7, 7], [12, 11, 10], [162, 168, 169], 11],
+            [[426, 473, 495], [133, 141, 140], [2, 2, 2], [9, 8, 9], [86, 93, 93], 10],
+            [[332, 234, 248], [92, 58, 63], [11, 11, 12], [10, 13, 9], [112, 106, 108], 8],
+            [[61, 65, 65], [38, 37, 36], [16, 15, 13], [8, 10, 15], [202, 204, 192], 8],
+        ]
+        data_values = []
+        for data_row in data:
+            data_row = data_row[:-1]
+            lines = []
+            for j in range(len(data_row[0])):
+                lines.append([line[j] for line in data_row])
+            data_values.append(lines)
+
+        dtm_now = random_datetime(hour_delta=0)
+        station = factories.StationFactory()
+        for i, values in enumerate(data_values):
+            records = []
+            j = -1
+            for j, row in enumerate(values):
+                records.append(factories.StationRecordFactory(
+                    station=station,
+                    city_record=factories.CityRecordFactory(city=station.city, update_dtm=dtm_now - timedelta(hours=j)),
+                    **dict(zip(fields, list(map(Decimal, row))))
+                ))
+
+            self.assertEqual(records[0].calculate_aqhi_field(), data[i][-1])
+            dtm_now += timedelta(hours=j+1)
+
+    def test_none_aqhi_field(self):
+        dtm_now = random_datetime(hour_delta=0)
+        station = factories.StationFactory()
+
+        records = []
+        records.append(factories.StationRecordFactory(
+            station=station,
+            city_record=factories.CityRecordFactory(city=station.city, update_dtm=dtm_now - timedelta(hours=0)),
+        ))
+
+        for hour in range(1, 3):
+            records.append(factories.StationRecordFactory(
+                station=station,
+                city_record=factories.CityRecordFactory(city=station.city, update_dtm=dtm_now - timedelta(hours=hour)),
+            ))
+        self.assertIsNotNone(records[0].calculate_aqhi_field())
+
+        for i in range(len(records)):
+            records[i].pm10 = None
+            records[i].save()
+
+        self.assertIsNone(records[0].calculate_aqhi_field())
 
 
 class TestEstimatedStationRecord(TestCase):

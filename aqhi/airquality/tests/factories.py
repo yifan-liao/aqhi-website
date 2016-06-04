@@ -169,6 +169,7 @@ class InfoDictFactory(PrimaryPollutantFieldsMixin, UpdateDtmFieldsMixin, RecordF
 class BaseRecordFactory(DjangoModelFactory):
 
     aqi = factory.LazyFunction(lambda: Decimal(random.randint(30, 200)))
+    aqhi = factory.LazyFunction(lambda: Decimal(random.randint(1, 11)))
     co = factory.LazyFunction(lambda: Decimal(random.randint(10, 150) / 100))
     no2 = factory.LazyFunction(lambda: Decimal(random.randint(20, 100)))
     o3 = factory.LazyFunction(lambda: Decimal(random.randint(20, 250)))
@@ -177,12 +178,6 @@ class BaseRecordFactory(DjangoModelFactory):
     pm2_5 = factory.LazyFunction(lambda: Decimal(random.randint(20, 150)))
     so2 = factory.LazyFunction(lambda: Decimal(random.randint(20, 150)))
     quality = factory.Iterator(list(zip(*models.RecordFields.QUALITY_LEVEL_CHOICES))[0])
-
-    @factory.lazy_attribute
-    def aqhi(self):
-        return Decimal(str(
-            round(utils.calculate_aqhi(float(self.pm10), float(self.no2)), 2)
-        ))
 
 
 class CityRecordFactory(BaseRecordFactory):

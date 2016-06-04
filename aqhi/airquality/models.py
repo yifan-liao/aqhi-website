@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 import copy
+from datetime import timedelta
 
 from django.db import models, transaction
 from django.core.exceptions import ValidationError
 
-from . import querysets
+from . import querysets, utils
 
 
 POLL_MAX_DIGITS = 8
@@ -65,6 +66,48 @@ class ValidateAndCreateManagerMixin(object):
         instance.full_clean()
         instance.save()
         return instance
+
+
+class CalculateAQHIFieldRecordMixin(object):
+    def calculate_aqhi_field(self):
+        if isinstance(self, StationRecord) or isinstance(self, EstimatedStationRecord):
+            dtm = self.city_record.update_dtm
+            lookup_kwargs_factory = lambda base_dtm, hours: dict(
+                station=self.station,
+                city_record__update_dtm=base_dtm - timedelta(hours=hours),
+            )
+        elif isinstance(self, CityRecord) or isinstance(self, EstimatedCityRecord):
+            dtm = self.update_dtm
+            lookup_kwargs_factory = lambda base_dtm, hours: dict(
+                city=self.city,
+                update_dtm=base_dtm - timedelta(hours=hours),
+            )
+        else:
+            return None
+
+        records_to_calc = []
+        two_hours_before = self._meta.model.objects.filter(**lookup_kwargs_factory(dtm, 2))
+        if two_hours_before.exists():
+            records_to_calc.append(two_hours_before.get())
+        one_hour_before = self._meta.model.objects.filter(**lookup_kwargs_factory(dtm, 1))
+        if one_hour_before.exists():
+            records_to_calc.append(one_hour_before.get())
+        records_to_calc.append(self)
+
+        avg_fields = utils.reduce_to_one_record_dict(
+            records_to_calc,
+            ['pm10', 'pm2_5', 'so2', 'no2', 'o3']
+        )
+        if None in avg_fields.values():
+            return None
+
+        return utils.calculate_aqhi_in_decimal(
+            pm10_3h_dec=avg_fields['pm10'],
+            pm25_3h_dec=avg_fields['pm2_5'],
+            so2_3h_dec=avg_fields['so2'],
+            no2_3h_dec=avg_fields['no2'],
+            o3_3h_dec=avg_fields['o3']
+        )
 
 
 # ===================================================================
@@ -132,7 +175,7 @@ class EstimatedStationPrimaryPollutantItem(PrimaryPollutantItem):
 
 # Record Base
 # -------------------------------------------------------------------
-class RecordFields(models.Model):
+class RecordFields(CalculateAQHIFieldRecordMixin, models.Model):
 
     QUALITY_LEVEL_CHOICES = (
         ('E', 'Excellent'),
