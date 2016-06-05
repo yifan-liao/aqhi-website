@@ -87,6 +87,21 @@ body
   font-family: "Lato"
   src: url("../fonts/Lato-Light.ttf") format('truetype')
 
+/* Air quality info */
+.aqhi-col
+  display: flex
+  flex-direction: row
+  align-items: center
+
+  .card-title
+    flex-grow: 1
+    text-align: center
+
+  .aqhi-side-container
+    flex-grow: 1
+    display: flex
+
+
 .aqhi-head,
 .temp-head,
 .aqi-head
@@ -94,245 +109,254 @@ body
   font-weight: 300
   font-size: 6rem
 
+.aqi-head
+  font-size: 2.5rem
+  margin-bottom: 0
 
-/* Overview.air-condition-card */
-.air-condition-card
-  .aqi-head
-    font-size: 2.5rem
-    margin-bottom: 0
+.aqi-title
+  font-size: 1rem
 
-  .aqi-title
-    font-size: 1rem
+.aqi-head,
+.aqi-title
+  text-align: center
 
-  .aqi-head,
-  .aqi-title
-    text-align: center
+.aqi-head + small
+  font-size: 50%
 
-  .aqi-head + small
-    font-size: 50%
+.aqhi-side-col
+  justify-content: space-between
+  margin-left: .5rem
 
-  .aqhi-side-col
-    justify-content: space-between
-    margin-left: .5rem
+.aqhi-title
+  font-size: 1.5rem
 
-  .aqhi-title
-    font-size: 1.5rem
+.aqhi-level
+  display: inline-block
+  text-align: center
+  border-radius: .25rem
+  padding: .375rem .75rem
+  min-width: 5rem
+  font-size: 1.5rem
+  margin-bottom: 0
 
-  .aqhi-level
-    display: inline-block
-    text-align: center
-    border-radius: .25rem
-    padding: .375rem .75rem
-    min-width: 5rem
-    font-size: 1.5rem
-    margin-bottom: 0
+.aqhi-level.aqhi-low
+  background-color: #00e400
+  border-color: #00e400
 
-  .aqhi-level.aqhi-low
-    background-color: #00e400
-    border-color: #00e400
+.aqhi-level.aqhi-moderate
+  background-color: #ff7e00
+  border-color: #ff7e00
 
-  .aqhi-level.aqhi-moderate
-    background-color: #ff7e00
-    border-color: #ff7e00
+.aqhi-level.aqhi-high
+  background-color: red
+  border-color: red
 
-  .aqhi-level.aqhi-high
-    background-color: red
-    border-color: red
+.aqhi-level.aqhi-very-high
+  background-color: #99004c
+  border-color: #99004c
+  color: #fff
 
-  .aqhi-level.aqhi-very-high
-    background-color: #99004c
-    border-color: #99004c
-    color: #fff
+.aqhi-level.aqhi-serious
+  background-color: #7e0023
+  border-color: #7e0023
+  color: #fff
 
-  .aqhi-level.aqhi-serious
-    background-color: #7e0023
-    border-color: #7e0023
-    color: #fff
+.people-class
+  background-color: #818a91
+  color: #fff
+  padding: .25rem .6em
+  border-radius: 10rem
+  text-align: center
+  white-space: nowrap
+  font-weight: 700
+  line-height: 1
+  display: inline-block
+  margin-bottom: 0.2rem
 
-  .people-class
-    background-color: #818a91
-    color: #fff
-    padding: .25rem .6em
-    border-radius: 10rem
-    text-align: center
-    white-space: nowrap
-    font-weight: 700
-    line-height: 1
+.pollutant-header
+  font-size: 1.25rem
 
-  .pollutant-header
-    font-size: 1.25rem
+.pollutant-name
+  font-size: 1rem
+  width: auto
 
-  .pollutant-name
-    font-size: 1rem
-    width: auto
+.pollutant-data
+  width: 100%
 
-  .pollutant-data
-    width: 100%
+.quality-level,
+.primary-pollutant-block,
+.primary-pollutant-list li
+  display: inline-block
 
-  .quality-level,
-  .primary-pollutant-block,
-  .primary-pollutant-list li
-    display: inline-block
+.pollutant-col .list-item-group-cell
+  text-align: right
 
-  .pollutant-col .list-item-group-cell
-    text-align: right
+  .label
+    margin-left: 1rem
 
-    .label
-      margin-left: 1rem
-
-.air-condition-card .qlty-and-plt-block
+.qlty-and-plt-block
   display: flex
   align-items: flex-end
 
-  .quality-level
-    display: inline-block
+.quality-level
+  display: inline-block
+  text-align: center
+  border-radius: .25rem
+  padding: 0 0.6rem
+  min-width: 4rem
+  font-size: 1.2rem
+  line-height: 1.5
+  margin-bottom: .5rem
+
+.quality-level.qlty-excellent
+  background-color: #00e400
+  border-color: #00e400
+
+.quality-level.qlty-good
+  background-color: yellow
+  border-color: yellow
+
+.quality-level.qlty-lightly
+  background-color: #ff7e00
+  border-color: #ff7e00
+
+.quality-level.qlty-moderately
+  background-color: red
+  border-color: red
+  color: #fff
+
+.quality-level.qlty-heavily
+  background-color: #99004c
+  border-color: #99004c
+  color: #fff
+
+.quality-level.qlty-severely
+  background-color: #7e0023
+  border-color: #7e0023
+  color: #fff
+
+.aq-header
+  font-size: 0.9rem
+
+.primary-pollutant-block
+  margin-left: 1rem
+
+.primary-pollutant-list
+  margin-bottom: 0
+  padding-left: 0
+
+  li
     text-align: center
     border-radius: .25rem
+    border: 1px solid black
     padding: 0 0.6rem
-    min-width: 4rem
-    font-size: 1.2rem
-    line-height: 1.5
-    margin-bottom: .5rem
+    margin-bottom: 0.2rem
 
-  .quality-level.qlty-excellent
-    background-color: #00e400
-    border-color: #00e400
+  li:not(:first-child):not(:last-child)
+    margin-left: 0.3rem
 
-  .quality-level.qlty-good
-    background-color: yellow
-    border-color: yellow
+  li.pol-co
+    background-color: #f4e781
+    border-color: #f4e781
 
-  .quality-level.qlty-lightly
-    background-color: #ff7e00
-    border-color: #ff7e00
+  li.pol-no2
+    background-color: #61a0a8
+    border-color: #61a0a8
 
-  .quality-level.qlty-moderately
-    background-color: red
-    border-color: red
-    color: #fff
+  li.pol-o3
+    background-color: #d48265
+    border-color: #d48265
 
-  .quality-level.qlty-heavily
-    background-color: #99004c
-    border-color: #99004c
-    color: #fff
+  li.pol-o3_8h
+    background-color: #91c7aE
+    border-color: #91c7ae
 
-  .quality-level.qlty-severely
-    background-color: #7e0023
-    border-color: #7e0023
-    color: #fff
+  li.pol-pm10
+    background-color: #749f83
+    border-color: #749f83
 
-  .aq-header
-    font-size: 0.9rem
+  li.pol-pm2_5
+    background-color: #ca8622
+    border-color: #ca8622
 
-  .primary-pollutant-block
-    margin-left: 1rem
+  li.pol-so2
+    background-color: #bda29a
+    border-color: #bda29a
 
-    .primary-pollutant-list
-      margin-bottom: 0
-      padding-left: 0
+/* Weather info */
+.cur-weather-block
+  i.wi
+    bottom: 0
+    right: -0.5rem
+    font-size: 2.5rem
 
-      li
-        text-align: center
-        border-radius: .25rem
-        border: 1px solid black
-        padding: 0 0.6rem
+.cur-weather-text
+  margin-bottom: 0.5rem
 
-      li.pol-co
-        background-color: #f4e781
-        border-color: #f4e781
+.next-day-weather-block
+  justify-content: space-between
 
-      li.pol-no2
-        background-color: #61a0a8
-        border-color: #61a0a8
+  i.wi
+    font-size: 2rem
 
-      li.pol-o3
-        background-color: #d48265
-        border-color: #d48265
+  .next-day-weather-col
+    margin-right: 0.3rem
 
-      li.pol-o3_8h
-        background-color: #91c7aE
-        border-color: #91c7ae
+.next-day-weather-data
+  margin-top: 0.5rem
+  width: 100%
+  justify-content: space-between
 
-      li.pol-pm10
-        background-color: #749f83
-        border-color: #749f83
+.next-day-weather-header
+  text-align: center
+  border-radius: .25rem
+  padding: 0.1rem 0.6rem
 
-      li.pol-pm2_5
-        background-color: #ca8622
-        border-color: #ca8622
+.next-day-weather-header.night
+  background-color: #9b59b6
+  color: #f3eda3
 
-      li.pol-so2
-        background-color: #bda29a
-        border-color: #bda29a
+.next-day-weather-header.day
+  background-color: #f3eda3
+  color: #9b59b6
 
-/* Overview.weather-card */
-.weather-card
-  .cur-weather-block
-    i.wi
-      bottom: 0
-      right: -0.5rem
-      font-size: 2.5rem
+.weather-update-time-text
+  margin-bottom: 0
 
-  .cur-weather-text
-    margin-bottom: 0.5rem
+.weekday-max-temp
+  margin-right: 0.8rem
 
-  .next-day-weather-block
-    justify-content: space-between
+.weekday-text
+  font-size: 1rem
 
-    i.wi
-      font-size: 2rem
+.weekday-weather
+  justify-content: flex-end
 
-  .next-day-weather-data
-    margin-top: 0.5rem
-    width: 100%
-    justify-content: space-between
+.weekday-weather-text
+  margin-right: 0.8rem
+  font-size: 0.8rem
 
-  .next-day-weather-header
-    text-align: center
-    border-radius: .25rem
-    padding: 0.1rem 0.6rem
+.weather-weekday-text
+  margin-left: 1rem
 
-  .next-day-weather-header.night
-    background-color: #9b59b6
-    color: #f3eda3
+.weekday-temp-range
+  margin-right: 1.5rem
 
-  .next-day-weather-header.day
-    background-color: #f3eda3
-    color: #9b59b6
+.hourly-weather-list
+  padding-left: 0
+  display: flex
+  flex-direction: row
+  justify-content: center
+  @media (max-width: 33.9em)
+    justify-content: flex-start
 
-  .weather-update-time-text
-    margin-bottom: 0
+.hourly-weather-item
+  margin-right: 2rem
 
-  .weekday-max-temp
-    margin-right: 0.8rem
+.hourly-weather-time
+  margin-bottom: 1rem
 
-  .weekday-text
-    font-size: 1rem
-
-  .weekday-weather
-    justify-content: flex-end
-
-    .weekday-weather-text
-      margin-right: 0.8rem
-      font-size: 0.8rem
-
-  .weather-weekday-text
-    margin-left: 1rem
-
-  .weekday-temp-range
-    margin-right: 1.5rem
-
-  .hourly-weather-list
-    padding-left: 0
-    justify-content: center
-
-  .hourly-weather-item
-    margin-right: 2rem
-
-  .hourly-weather-time
-    margin-bottom: 1rem
-
-  .hourly-weather-temp
-    font-family: "Lato", "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif
-    font-size: 1.5rem
+.hourly-weather-temp
+  font-family: "Lato", "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif
+  font-size: 1.5rem
 

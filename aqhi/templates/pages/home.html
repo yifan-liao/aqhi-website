@@ -4,6 +4,7 @@
 {% block stylesheets %}
   {{ block.super }}
   <link href="{% static 'lib/weather-icons-2.0/css/weather-icons.min.css' %}" rel="stylesheet">
+  <link href="{% static 'css/jquery.scrollbar.css' %}" rel="stylesheet">
   <link href="{% static 'css/home.css' %}" rel="stylesheet">
 {% endblock stylesheets %}
 
@@ -17,6 +18,7 @@
     {% endfor %}
   </div>
 
+  <hr>
   <div class="card" id="rank">
     <div class="card-header">
       实时AQHI排名
@@ -32,5 +34,6 @@
   {{ block.super }}
   <script src="{% static 'lib/moment-2.13.0/moment-with-locales.min.js' %}"></script>
   <script src="{% static 'lib/echarts-3.1.9.min.js' %}"></script>
+  <script src="{% static 'lib/jquery.scrollbar.min.js' %}"></script>
   <script src="{% static 'js/home.js' %}"></script>
 {% endblock javascript %}

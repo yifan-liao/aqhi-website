@@ -13,17 +13,19 @@
         <div class="container">
 
           <div class="row valign-row">
-            <div class="col-md-6 valign-row">
-              <!-- AQI data -->
+            <div class="col-md-7 aqhi-col">
+              <!-- AQHI data -->
               <h1 class="card-title">
                 <span class="aqhi-head"></span>
               </h1>
-              <div class="halign-row aqhi-side-col">
-                <h2 class="aqhi-title text-muted">AQHI</h2>
-                <p class="aqhi-level"></p>
+              <div class="aqhi-side-container">
+                <div class="aqhi-side-col halign-row">
+                  <h2 class="aqhi-title text-muted">AQHI</h2>
+                  <p class="aqhi-level"></p>
+                </div>
               </div>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-5">
               <div class="qlty-and-plt-block valign-row">
                 <!-- Quality level, AQI and primary pollutants -->
                 <div class="aqi-main-col">
@@ -180,14 +182,14 @@
             --><div class="col-md-6">
               <div class="next-day-weather-block valign-row">
                 <div class="next-day-weather-col halign-row">
-                  <div class="next-day-weather-header night"></div>
+                  <div class="next-day-weather-header"></div>
                   <div class="next-day-weather-data valign-row">
                     <i class="wi"></i>
                     <div class="next-day-weather-text"></div>
                   </div>
                 </div>
                 <div class="next-day-forecast-col halign-row">
-                  <div class="next-day-weather-header day"></div>
+                  <div class="next-day-weather-header"></div>
                   <div class="next-day-weather-data valign-row">
                     <i class="wi"></i>
                     <div class="next-day-weather-text"></div>
@@ -217,14 +219,16 @@
 
       <ul class="list-group list-group-flush">
         <li class="list-group-item">
-          <ul class="hourly-weather-list valign-row">
-            {% comment %}
-              <li class="hourly-weather-item halign-row">
-                <div class="hourly-weather-time"></div>
-                <div class="hourly-weather-temp"><span class="hourly-weather-temp-data"></span>º</div>
-              </li>
-            {% endcomment %}
-          </ul>
+          <div class="scrollbar-macosx">
+            <ul class="hourly-weather-list">
+              {% comment %}
+                <li class="hourly-weather-item halign-row">
+                  <div class="hourly-weather-time"></div>
+                  <div class="hourly-weather-temp"><span class="hourly-weather-temp-data"></span>º</div>
+                </li>
+              {% endcomment %}
+            </ul>
+          </div>
         </li>
         <li class="list-group-item weekday-weather-list">
           {% comment %}

@@ -80,6 +80,18 @@ body {
 @font-face {
   font-family: "Lato";
   src: url("../fonts/Lato-Light.ttf") format("truetype"); }
+/* Air quality info */
+.aqhi-col {
+  display: flex;
+  flex-direction: row;
+  align-items: center; }
+  .aqhi-col .card-title {
+    flex-grow: 1;
+    text-align: center; }
+  .aqhi-col .aqhi-side-container {
+    flex-grow: 1;
+    display: flex; }
+
 .aqhi-head,
 .temp-head,
 .aqi-head {
@@ -87,23 +99,28 @@ body {
   font-weight: 300;
   font-size: 6rem; }
 
-/* Overview.air-condition-card */
-.air-condition-card .aqi-head {
+.aqi-head {
   font-size: 2.5rem;
   margin-bottom: 0; }
-.air-condition-card .aqi-title {
+
+.aqi-title {
   font-size: 1rem; }
-.air-condition-card .aqi-head,
-.air-condition-card .aqi-title {
+
+.aqi-head,
+.aqi-title {
   text-align: center; }
-.air-condition-card .aqi-head + small {
+
+.aqi-head + small {
   font-size: 50%; }
-.air-condition-card .aqhi-side-col {
+
+.aqhi-side-col {
   justify-content: space-between;
   margin-left: 0.5rem; }
-.air-condition-card .aqhi-title {
+
+.aqhi-title {
   font-size: 1.5rem; }
-.air-condition-card .aqhi-level {
+
+.aqhi-level {
   display: inline-block;
   text-align: center;
   border-radius: 0.25rem;
@@ -111,24 +128,30 @@ body {
   min-width: 5rem;
   font-size: 1.5rem;
   margin-bottom: 0; }
-.air-condition-card .aqhi-level.aqhi-low {
+
+.aqhi-level.aqhi-low {
   background-color: #00e400;
   border-color: #00e400; }
-.air-condition-card .aqhi-level.aqhi-moderate {
+
+.aqhi-level.aqhi-moderate {
   background-color: #ff7e00;
   border-color: #ff7e00; }
-.air-condition-card .aqhi-level.aqhi-high {
+
+.aqhi-level.aqhi-high {
   background-color: red;
   border-color: red; }
-.air-condition-card .aqhi-level.aqhi-very-high {
+
+.aqhi-level.aqhi-very-high {
   background-color: #99004c;
   border-color: #99004c;
   color: #fff; }
-.air-condition-card .aqhi-level.aqhi-serious {
+
+.aqhi-level.aqhi-serious {
   background-color: #7e0023;
   border-color: #7e0023;
   color: #fff; }
-.air-condition-card .people-class {
+
+.people-class {
   background-color: #818a91;
   color: #fff;
   padding: 0.25rem 0.6em;
@@ -136,138 +159,182 @@ body {
   text-align: center;
   white-space: nowrap;
   font-weight: 700;
-  line-height: 1; }
-.air-condition-card .pollutant-header {
+  line-height: 1;
+  display: inline-block;
+  margin-bottom: 0.2rem; }
+
+.pollutant-header {
   font-size: 1.25rem; }
-.air-condition-card .pollutant-name {
+
+.pollutant-name {
   font-size: 1rem;
   width: auto; }
-.air-condition-card .pollutant-data {
+
+.pollutant-data {
   width: 100%; }
-.air-condition-card .quality-level,
-.air-condition-card .primary-pollutant-block,
-.air-condition-card .primary-pollutant-list li {
+
+.quality-level,
+.primary-pollutant-block,
+.primary-pollutant-list li {
   display: inline-block; }
-.air-condition-card .pollutant-col .list-item-group-cell {
+
+.pollutant-col .list-item-group-cell {
   text-align: right; }
-  .air-condition-card .pollutant-col .list-item-group-cell .label {
+  .pollutant-col .list-item-group-cell .label {
     margin-left: 1rem; }
 
-.air-condition-card .qlty-and-plt-block {
+.qlty-and-plt-block {
   display: flex;
   align-items: flex-end; }
-  .air-condition-card .qlty-and-plt-block .quality-level {
-    display: inline-block;
+
+.quality-level {
+  display: inline-block;
+  text-align: center;
+  border-radius: 0.25rem;
+  padding: 0 0.6rem;
+  min-width: 4rem;
+  font-size: 1.2rem;
+  line-height: 1.5;
+  margin-bottom: 0.5rem; }
+
+.quality-level.qlty-excellent {
+  background-color: #00e400;
+  border-color: #00e400; }
+
+.quality-level.qlty-good {
+  background-color: yellow;
+  border-color: yellow; }
+
+.quality-level.qlty-lightly {
+  background-color: #ff7e00;
+  border-color: #ff7e00; }
+
+.quality-level.qlty-moderately {
+  background-color: red;
+  border-color: red;
+  color: #fff; }
+
+.quality-level.qlty-heavily {
+  background-color: #99004c;
+  border-color: #99004c;
+  color: #fff; }
+
+.quality-level.qlty-severely {
+  background-color: #7e0023;
+  border-color: #7e0023;
+  color: #fff; }
+
+.aq-header {
+  font-size: 0.9rem; }
+
+.primary-pollutant-block {
+  margin-left: 1rem; }
+
+.primary-pollutant-list {
+  margin-bottom: 0;
+  padding-left: 0; }
+  .primary-pollutant-list li {
     text-align: center;
     border-radius: 0.25rem;
+    border: 1px solid black;
     padding: 0 0.6rem;
-    min-width: 4rem;
-    font-size: 1.2rem;
-    line-height: 1.5;
-    margin-bottom: 0.5rem; }
-  .air-condition-card .qlty-and-plt-block .quality-level.qlty-excellent {
-    background-color: #00e400;
-    border-color: #00e400; }
-  .air-condition-card .qlty-and-plt-block .quality-level.qlty-good {
-    background-color: yellow;
-    border-color: yellow; }
-  .air-condition-card .qlty-and-plt-block .quality-level.qlty-lightly {
-    background-color: #ff7e00;
-    border-color: #ff7e00; }
-  .air-condition-card .qlty-and-plt-block .quality-level.qlty-moderately {
-    background-color: red;
-    border-color: red;
-    color: #fff; }
-  .air-condition-card .qlty-and-plt-block .quality-level.qlty-heavily {
-    background-color: #99004c;
-    border-color: #99004c;
-    color: #fff; }
-  .air-condition-card .qlty-and-plt-block .quality-level.qlty-severely {
-    background-color: #7e0023;
-    border-color: #7e0023;
-    color: #fff; }
-  .air-condition-card .qlty-and-plt-block .aq-header {
-    font-size: 0.9rem; }
-  .air-condition-card .qlty-and-plt-block .primary-pollutant-block {
-    margin-left: 1rem; }
-    .air-condition-card .qlty-and-plt-block .primary-pollutant-block .primary-pollutant-list {
-      margin-bottom: 0;
-      padding-left: 0; }
-      .air-condition-card .qlty-and-plt-block .primary-pollutant-block .primary-pollutant-list li {
-        text-align: center;
-        border-radius: 0.25rem;
-        border: 1px solid black;
-        padding: 0 0.6rem; }
-      .air-condition-card .qlty-and-plt-block .primary-pollutant-block .primary-pollutant-list li.pol-co {
-        background-color: #f4e781;
-        border-color: #f4e781; }
-      .air-condition-card .qlty-and-plt-block .primary-pollutant-block .primary-pollutant-list li.pol-no2 {
-        background-color: #61a0a8;
-        border-color: #61a0a8; }
-      .air-condition-card .qlty-and-plt-block .primary-pollutant-block .primary-pollutant-list li.pol-o3 {
-        background-color: #d48265;
-        border-color: #d48265; }
-      .air-condition-card .qlty-and-plt-block .primary-pollutant-block .primary-pollutant-list li.pol-o3_8h {
-        background-color: #91c7aE;
-        border-color: #91c7ae; }
-      .air-condition-card .qlty-and-plt-block .primary-pollutant-block .primary-pollutant-list li.pol-pm10 {
-        background-color: #749f83;
-        border-color: #749f83; }
-      .air-condition-card .qlty-and-plt-block .primary-pollutant-block .primary-pollutant-list li.pol-pm2_5 {
-        background-color: #ca8622;
-        border-color: #ca8622; }
-      .air-condition-card .qlty-and-plt-block .primary-pollutant-block .primary-pollutant-list li.pol-so2 {
-        background-color: #bda29a;
-        border-color: #bda29a; }
+    margin-bottom: 0.2rem; }
+  .primary-pollutant-list li:not(:first-child):not(:last-child) {
+    margin-left: 0.3rem; }
+  .primary-pollutant-list li.pol-co {
+    background-color: #f4e781;
+    border-color: #f4e781; }
+  .primary-pollutant-list li.pol-no2 {
+    background-color: #61a0a8;
+    border-color: #61a0a8; }
+  .primary-pollutant-list li.pol-o3 {
+    background-color: #d48265;
+    border-color: #d48265; }
+  .primary-pollutant-list li.pol-o3_8h {
+    background-color: #91c7aE;
+    border-color: #91c7ae; }
+  .primary-pollutant-list li.pol-pm10 {
+    background-color: #749f83;
+    border-color: #749f83; }
+  .primary-pollutant-list li.pol-pm2_5 {
+    background-color: #ca8622;
+    border-color: #ca8622; }
+  .primary-pollutant-list li.pol-so2 {
+    background-color: #bda29a;
+    border-color: #bda29a; }
 
-/* Overview.weather-card */
-.weather-card .cur-weather-block i.wi {
+/* Weather info */
+.cur-weather-block i.wi {
   bottom: 0;
   right: -0.5rem;
   font-size: 2.5rem; }
-.weather-card .cur-weather-text {
+
+.cur-weather-text {
   margin-bottom: 0.5rem; }
-.weather-card .next-day-weather-block {
+
+.next-day-weather-block {
   justify-content: space-between; }
-  .weather-card .next-day-weather-block i.wi {
+  .next-day-weather-block i.wi {
     font-size: 2rem; }
-.weather-card .next-day-weather-data {
+  .next-day-weather-block .next-day-weather-col {
+    margin-right: 0.3rem; }
+
+.next-day-weather-data {
   margin-top: 0.5rem;
   width: 100%;
   justify-content: space-between; }
-.weather-card .next-day-weather-header {
+
+.next-day-weather-header {
   text-align: center;
   border-radius: 0.25rem;
   padding: 0.1rem 0.6rem; }
-.weather-card .next-day-weather-header.night {
+
+.next-day-weather-header.night {
   background-color: #9b59b6;
   color: #f3eda3; }
-.weather-card .next-day-weather-header.day {
+
+.next-day-weather-header.day {
   background-color: #f3eda3;
   color: #9b59b6; }
-.weather-card .weather-update-time-text {
+
+.weather-update-time-text {
   margin-bottom: 0; }
-.weather-card .weekday-max-temp {
+
+.weekday-max-temp {
   margin-right: 0.8rem; }
-.weather-card .weekday-text {
+
+.weekday-text {
   font-size: 1rem; }
-.weather-card .weekday-weather {
+
+.weekday-weather {
   justify-content: flex-end; }
-  .weather-card .weekday-weather .weekday-weather-text {
-    margin-right: 0.8rem;
-    font-size: 0.8rem; }
-.weather-card .weather-weekday-text {
+
+.weekday-weather-text {
+  margin-right: 0.8rem;
+  font-size: 0.8rem; }
+
+.weather-weekday-text {
   margin-left: 1rem; }
-.weather-card .weekday-temp-range {
+
+.weekday-temp-range {
   margin-right: 1.5rem; }
-.weather-card .hourly-weather-list {
+
+.hourly-weather-list {
   padding-left: 0;
+  display: flex;
+  flex-direction: row;
   justify-content: center; }
-.weather-card .hourly-weather-item {
+  @media (max-width: 33.9em) {
+    .hourly-weather-list {
+      justify-content: flex-start; } }
+
+.hourly-weather-item {
   margin-right: 2rem; }
-.weather-card .hourly-weather-time {
+
+.hourly-weather-time {
   margin-bottom: 1rem; }
-.weather-card .hourly-weather-temp {
+
+.hourly-weather-temp {
   font-family: "Lato", "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 1.5rem; }
 

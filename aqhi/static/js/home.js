@@ -472,24 +472,31 @@ function initCityAirCondition(cityRecord, cityAirCard) {
   var record = cityRecord;
 
   var qualityEle = cityAirCard.find('.quality-level');
-  var aqhiEle = cityAirCard.find('.aqhi-level');
+  var aqhiLevelEle = cityAirCard.find('.aqhi-level');
+  var aqhiHeadEle = cityAirCard.find('.aqhi-head');
   var primaryPolListEle = cityAirCard.find('.primary-pollutant-list');
   var polDataEles = pollutantNames.reduce(function(prev, name) {
     prev[name] = cityAirCard.find('.pollutant-data.pol-' + name);
     return prev;
   }, Object.create(null));
 
-  cityAirCard.find('.aqhi-head').text(parseFloat(record.aqhi).toFixed(1));
+  if (record.aqhi == 11 || record.aqhi == '') {
+    aqhiHeadEle.addClass('compact');
+  } else {
+    aqhiHeadEle.removeClass('compact');
+  }
+  aqhiHeadEle.html(getAqhiHtml(record.aqhi));
   cityAirCard.find('.aqi-head').text(parseInt(record.aqi));
   qualityEle.addClass(qualityTexts[record.quality].cls);
   qualityEle.html(qualityTexts[record.quality].text);
   var aqhiLevel = getAqhiLevel(record.aqhi);
-  aqhiEle.addClass(aqhiTexts[aqhiLevel].cls);
-  aqhiEle.html(aqhiTexts[aqhiLevel].text);
+  aqhiLevelEle.addClass(aqhiTexts[aqhiLevel].cls);
+  aqhiLevelEle.html(aqhiTexts[aqhiLevel].text);
   cityAirCard.find('.people-advice-text').html(aqhiAdviceTextEles[aqhiLevel]);
   cityAirCard.find('.air-condition-update-time-data').text(moment(record.update_dtm).fromNow());
 
   var primaryPollutants = record.primary_pollutants;
+  //var primaryPollutants = [{pollutant :'o3'}, {pollutant: 'pm10'}, {pollutant:'pm2_5'}];
   if (record.primary_pollutants.length == 0)
     primaryPollutants.push({pollutant: 'NA'});
   primaryPollutants.forEach(function(pol) {
@@ -538,37 +545,47 @@ function initCityWeather(cityRecord, cityPanel) {
     cityPanel.find('.today-min-temp').text(todayWeatherData.tmp.min);
     cityPanel.find('.temp-head-data').text(nowWeatherData.tmp);
     cityPanel.find('.cur-weather-text').text(nowWeatherData.cond.txt);
+
+    // Current weather Icon
     curWeatherIcon.removeClass().addClass(
       `wi ${weatherIconClassNames[nowWeatherData.cond.code][isDay ? 'day' : 'night']}`
     );
 
+    // Next day weather
     var tomorrowWeatherData = weatherData.daily_forecast[1];
     var nextDayWeatherFirstRow = cityPanel.find('.next-day-weather-col').first();
     var nextDayWeatherSecondRow = nextDayWeatherFirstRow.next();
-    nextDayWeatherFirstRow.find('.next-day-weather-header').text(
-      isDay ? '今天白天' : '今天夜间'
-    );
-    nextDayWeatherFirstRow.find('.next-day-weather-text').text(
-      isDay ? todayWeatherData.cond.txt_d : todayWeatherData.cond.txt_n
-    );
-    nextDayWeatherFirstRow.find('i').removeClass().addClass(
-      `wi ${isDay ? 
-        weatherIconClassNames[todayWeatherData.cond.code_d].day : 
-        weatherIconClassNames[todayWeatherData.cond.code_n].night
-        }`
-    );
-    nextDayWeatherSecondRow.find('.next-day-weather-header').text(
-      isDay ? '今天夜间' : '明天白天'
-    );
-    nextDayWeatherSecondRow.find('.next-day-weather-text').text(
-      isDay ? todayWeatherData.cond.txt_n : tomorrowWeatherData.cond.txt_d
-    );
-    nextDayWeatherSecondRow.find('i').removeClass().addClass(
-      `wi ${isDay ? 
-        weatherIconClassNames[todayWeatherData.cond.code_n].night : 
-        weatherIconClassNames[tomorrowWeatherData.cond.code_d].day
-        }`
-    );
+
+    var headerTxt, headerClass, weatherTxt, weatherIconClass;
+    if (isDay) {
+      headerTxt = '今天白天';
+      headerClass = 'day';
+      weatherTxt = todayWeatherData.cond.txt_d;
+      weatherIconClass = weatherIconClassNames[todayWeatherData.cond.code_d].day;
+    } else {
+      headerTxt = '今天夜间';
+      headerClass = 'night';
+      weatherTxt = todayWeatherData.cond.txt_n;
+      weatherIconClass = weatherIconClassNames[todayWeatherData.cond.code_n].night;
+    }
+    nextDayWeatherFirstRow.find('.next-day-weather-header').text(headerTxt).removeClass(['day', 'night']).addClass(headerClass);
+    nextDayWeatherFirstRow.find('.next-day-weather-text').text(weatherTxt);
+    nextDayWeatherFirstRow.find('i').removeClass().addClass(`wi ${weatherIconClass}`);
+
+    if (isDay) {
+      headerTxt = '今天夜间';
+      headerClass = 'night';
+      weatherTxt = todayWeatherData.cond.txt_n;
+      weatherIconClass = weatherIconClassNames[todayWeatherData.cond.code_n].night;
+    } else {
+      headerTxt = '明天白天';
+      headerClass = 'day';
+      weatherTxt = tomorrowWeatherData.cond.txt_d;
+      weatherIconClass = weatherIconClassNames[tomorrowWeatherData.cond.code_d].day;
+    }
+    nextDayWeatherSecondRow.find('.next-day-weather-header').text(headerTxt).removeClass(['day', 'night']).addClass(headerClass);
+    nextDayWeatherSecondRow.find('.next-day-weather-text').text(weatherTxt);
+    nextDayWeatherSecondRow.find('i').removeClass().addClass(`wi ${weatherIconClass}`);
 
     var hourlyForecasts = weatherData.hourly_forecast;
     var hourlyForecastList = cityPanel.find('.hourly-weather-list');
@@ -581,6 +598,7 @@ function initCityWeather(cityRecord, cityPanel) {
       var forecastCurTime = getCurDatetime(localUtcOffset, forecast.date);
       hourlyForecastList.append(getNewHourlyWeatherListItem(forecastCurTime.format('HH:mm'), forecast.tmp));
     });
+    hourlyForecastList.closest('.scrollbar-macosx').scrollbar();
 
     var dailyForecastList = cityPanel.find('.weekday-weather-list');
     var dailyForecastData = weatherData.daily_forecast.slice(1);
@@ -768,4 +786,14 @@ function parsePollutantOrAqiValue(name, valueString, decimalPlaces) {
     return parseInt(valueString);
   else
     return parseFloat(parseFloat(valueString).toFixed(decimalPlaces))
+}
+
+function getAqhiHtml(value) {
+  if (value <= 10 && value >= 1) {
+    return String(parseInt(value));
+  } else if (value == 11) {
+    return '10<sup>+</sup>';
+  } else if (value == '') {
+    return 'N/A'
+  }
 }
