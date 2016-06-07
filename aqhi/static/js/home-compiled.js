@@ -608,6 +608,7 @@ function initRankChart(dtmString) {
     xAxis: {
       type: 'value',
       position: 'top',
+      max: 11,
       axisLine: { lineStyle: { color: '#fff' } },
       splitLine: { lineStyle: { type: 'dashed' } },
       axisLabel: { textStyle: { color: '#fff' } }
