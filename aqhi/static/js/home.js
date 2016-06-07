@@ -640,7 +640,7 @@ function initCityWeather(cityRecord, cityPanel) {
       var forecastCurTime = getCurDatetime(localUtcOffset, forecast.date);
       hourlyForecastList.append(getNewHourlyWeatherListItem(forecastCurTime.format('HH:mm'), forecast.tmp));
     });
-    hourlyForecastList.closest('.scrollbar-macosx').scrollbar();
+    hourlyForecastList.closest('.scrollbar').niceScroll();
 
     // Daily forecast
     var dailyForecastList = cityPanel.find('.weekday-weather-list');
