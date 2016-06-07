@@ -2,7 +2,7 @@
 
 moment.locale('zh-cn');
 
-var CountdownLatch = function (limit) {
+var CountdownLatch = function CountdownLatch(limit) {
   this.limit = limit;
   this.count = 0;
   this.waitBlock = function () {};
@@ -35,48 +35,11 @@ var aqhiTexts = {
   4: { cls: 'aqhi-serious', text: '严重' }
 };
 var aqhiAdviceTextEles = {
-  0: $(`
-    <p class="card-text">
-      所有人员均可正常活动。
-    </p>
-  `),
-  1: $(`
-    <p class="card-text">
-      <span class="people-class">心脏病或呼吸系统疾病患者</span>
-      <br>应<strong>考虑减少</strong>户外体力消耗。
-    </p>
-  `),
-  2: $(`
-    <p class="card-text">
-      <span class="people-class">心脏病或呼吸系统疾病患者</span>
-      <span class="people-class">儿童及老人</span>
-      <br>应<strong>减少</strong>户外体力消耗和户外逗留时间。
-    </p>
-  `),
-  3: $(`
-    <p class="card-text">
-      <span class="people-class">心脏病或呼吸系统疾病患者</span>
-      <span class="people-class">儿童及老人</span>
-      <br>应<strong>尽量减少</strong>户外体力消耗和户外逗留时间。
-    </p>
-    <p class="card-text">
-      <span class="people-class">户外工作人员</span>
-      <span class="people-class">一般市民</span>
-      <br>应<strong>减少</strong>户外体力消耗和户外逗留时间。
-    </p>
-  `),
-  4: $(`
-    <p class="card-text">
-      <span class="people-class">心脏病或呼吸系统疾病患者</span>
-      <span class="people-class">儿童及老人</span>
-      <br>应<strong>避免</strong>户外体力消耗和户外逗留。
-    </p>
-    <p class="card-text">
-      <span class="people-class">户外工作人员</span>
-      <span class="people-class">一般市民</span>
-      <br>应<strong>尽量减少</strong>户外体力消耗和户外逗留时间。
-    </p>
-  `)
+  0: $('\n    <p class="card-text">\n      所有人员均可正常活动。\n    </p>\n  '),
+  1: $('\n    <p class="card-text">\n      <span class="people-class">心脏病或呼吸系统疾病患者</span>\n      <br>应<strong>考虑减少</strong>户外体力消耗。\n    </p>\n  '),
+  2: $('\n    <p class="card-text">\n      <span class="people-class">心脏病或呼吸系统疾病患者</span>\n      <span class="people-class">儿童及老人</span>\n      <br>应<strong>减少</strong>户外体力消耗和户外逗留时间。\n    </p>\n  '),
+  3: $('\n    <p class="card-text">\n      <span class="people-class">心脏病或呼吸系统疾病患者</span>\n      <span class="people-class">儿童及老人</span>\n      <br>应<strong>尽量减少</strong>户外体力消耗和户外逗留时间。\n    </p>\n    <p class="card-text">\n      <span class="people-class">户外工作人员</span>\n      <span class="people-class">一般市民</span>\n      <br>应<strong>减少</strong>户外体力消耗和户外逗留时间。\n    </p>\n  '),
+  4: $('\n    <p class="card-text">\n      <span class="people-class">心脏病或呼吸系统疾病患者</span>\n      <span class="people-class">儿童及老人</span>\n      <br>应<strong>避免</strong>户外体力消耗和户外逗留。\n    </p>\n    <p class="card-text">\n      <span class="people-class">户外工作人员</span>\n      <span class="people-class">一般市民</span>\n      <br>应<strong>尽量减少</strong>户外体力消耗和户外逗留时间。\n    </p>\n  ')
 };
 
 var pollutantNames = ['co', 'so2', 'o3', 'o3_8h', 'pm10', 'pm2_5', 'no2'];
@@ -166,13 +129,44 @@ var zhWeekDays = {
 };
 
 $(function () {
+  // Helper functions
+  var toggleIcon = function toggleIcon(iconEle, collapse) {
+    iconEle.each(function (i, e) {
+      e = $(e);
+      if (!collapse || collapse == undefined && e.hasClass('icon-rotate-180')) e.removeClass('icon-rotate-180');else if (collapse || collapse == undefined && !e.hasClass('icon-rotate-180')) e.addClass('icon-rotate-180');
+    });
+  };
+
   // City accordion
-  $('#city-accordion').on('click', '.panel-heading a', function (event) {
+  var cityAccordion = $('#city-accordion');
+
+  // Style changes on collapsed
+  cityAccordion.on('show.bs.collapse', '.panel-collapse', function () {
+    // After one is going to show, change panel heading's style
+    $(this).closest('.city-panel').find('.city-panel-heading').removeClass('collapsed');
+  });
+  cityAccordion.on('hidden.bs.collapse', '.panel-collapse', function () {
+    // After one is hidden
+    // Change panel heading's style
+    $(this).closest('.city-panel').find('.city-panel-heading').addClass('collapsed');
+  });
+  cityAccordion.on('shown.bs.collapse', '.panel-collapse', function () {
+    // After one is shown, follow the transition to the city title
+    var panelCollapse = $(this);
+    if (panelCollapse.hasClass('collapse') && panelCollapse.hasClass('in')) {
+      var target = panelCollapse.closest('.city-panel').find('.city-title-link');
+      $('html, body').stop().animate({
+        scrollTop: target.offset().top - 70
+      }, 500, 'swing');
+    }
+  });
+
+  cityAccordion.on('click', '.panel-heading a', function (event) {
     var body_ele = $($(this).attr('href'));
+    var cityName = $(this).closest('.city-panel').data('city');
     if (body_ele.children().length == 0) {
       event.stopPropagation();
 
-      var cityName = $(this).closest('.city-panel').data('city');
       $.get('api/core/city_panel_body', {
         city_en: cityName
       }).done(function (response) {
@@ -184,6 +178,14 @@ $(function () {
         initCity(cityName, body_ele.closest('.city-panel'));
       });
     }
+
+    // Toggle collapse icon
+    if (body_ele.hasClass('collapse')) {
+      if (body_ele.hasClass('in')) toggleIcon($(this).find('.icon-collapse'), true);else {
+        toggleIcon($(this).find('.icon-collapse'), false);
+        toggleIcon($(this).closest('.panel').siblings().find('.icon-collapse'), true);
+      }
+    } else if (body_ele.hasClass('collapsing')) toggleIcon($(this).find('.icon-collapse'), true);
   });
 
   var primaryCityPanel = $('.city-panel.primary-city-panel');
@@ -208,7 +210,7 @@ function initStationsMap(cityRecord, cityPanel) {
   var option = {
     backgroundColor: '#404a59',
     tooltip: {
-      formatter: function (params) {
+      formatter: function formatter(params) {
         return params.name + "：" + params.value[2];
       }
     },
@@ -260,14 +262,11 @@ function initStationsMap(cityRecord, cityPanel) {
   };
 
   var cityName = cityRecord.city.name_en;
-  var myChart = echarts.init(document.getElementById('map-' + cityName));
+  var chartEle = $('#map-' + cityName);
+  var myChart = echarts.init(chartEle[0]);
   setChartSize(myChart, 0.6);
-  myChart.showLoading();
 
-  $(window).on('resize', function () {
-    setChartSize(myChart, 0.6);
-    myChart.resize();
-  });
+  registerEchartResizeFuncton(myChart);
 
   // load data
   var loadingLatch = new CountdownLatch(2);
@@ -332,9 +331,9 @@ function initStationsMap(cityRecord, cityPanel) {
       };
       option.series.push(seriesData);
     });
-    myChart.hideLoading();
     myChart.setOption(option);
     myChart.resize();
+    hideLoading(chartEle.closest('.card-content'));
   });
 }
 
@@ -402,15 +401,11 @@ function initCityHistoryChart(cityRecord, cityPanel) {
   };
 
   var cityName = cityRecord.city.name_en;
-  var chart = echarts.init(document.getElementById(`history-chart-${ cityName }`));
+  var chartEle = $('#history-chart-' + cityName);
+  var chart = echarts.init(chartEle[0]);
   setChartSize(chart, 0.6);
 
-  $(window).on('resize', function () {
-    setChartSize(chart, 0.6);
-    chart.resize();
-  });
-
-  chart.showLoading();
+  registerEchartResizeFuncton(chart);
 
   var pollutantAndAqiSeriesData = pollutantAndAqiNames.reduce(function (obj, name) {
     var datum = Object.assign({}, seriesDataTemplate);
@@ -436,7 +431,7 @@ function initCityHistoryChart(cityRecord, cityPanel) {
     var records = data.results;
 
     for (var curDtm = startDtm.clone(); curDtm <= endDtm; curDtm.add(1, 'hours')) {
-      option.xAxis[0].data.push(curDtm.isSame(endDtm) ? "现在" : `${ curDtm.hours() }时`);
+      option.xAxis[0].data.push(curDtm.isSame(endDtm) ? "现在" : curDtm.hours() + '时');
       var curRecord = records.find(function (ele) {
         return moment(ele.update_dtm).isSame(curDtm);
       });
@@ -455,7 +450,7 @@ function initCityHistoryChart(cityRecord, cityPanel) {
     }
     chart.setOption(option);
     chart.resize();
-    chart.hideLoading();
+    hideLoading(chartEle.closest('.card-content'));
   });
 }
 
@@ -471,10 +466,10 @@ function initCityAirCondition(cityRecord, cityAirCard) {
     return prev;
   }, Object.create(null));
 
-  if (record.aqhi == 11 || record.aqhi == '') {
-    aqhiHeadEle.addClass('compact');
+  if (record.aqhi == 11) {
+    aqhiHeadEle.addClass('aqhi-head-small');
   } else {
-    aqhiHeadEle.removeClass('compact');
+    aqhiHeadEle.removeClass('aqhi-head-small');
   }
   aqhiHeadEle.html(getAqhiHtml(record.aqhi));
   cityAirCard.find('.aqi-head').text(parseInt(record.aqi));
@@ -487,7 +482,6 @@ function initCityAirCondition(cityRecord, cityAirCard) {
   cityAirCard.find('.air-condition-update-time-data').text(moment(record.update_dtm).fromNow());
 
   var primaryPollutants = record.primary_pollutants;
-  //var primaryPollutants = [{pollutant :'o3'}, {pollutant: 'pm10'}, {pollutant:'pm2_5'}];
   if (record.primary_pollutants.length == 0) primaryPollutants.push({ pollutant: 'NA' });
   primaryPollutants.forEach(function (pol) {
     var name = pol.pollutant;
@@ -503,8 +497,12 @@ function initCityAirCondition(cityRecord, cityAirCard) {
 }
 
 function initCityWeather(cityRecord, cityPanel) {
+  var resizeHourlyForecastList = function resizeHourlyForecastList() {
+    cityPanel.find('.hourly-weather-list').width(cityPanel.find('.air-condition-card .card-header').width() - 3);
+  };
+  $(window).resize(resizeHourlyForecastList);
   // test
-  $.getJSON(`static/weather/test-${ cityRecord.city.name_en }.json`).done(function (jsonData) {
+  $.getJSON('static/weather/test-' + cityRecord.city.name_en + '.json').done(function (jsonData) {
     var weatherData = jsonData['HeWeather data service 3.0'][0];
     var todayWeatherData = weatherData.daily_forecast[0];
 
@@ -523,14 +521,14 @@ function initCityWeather(cityRecord, cityPanel) {
     var nowWeatherData = weatherData.now;
     var curWeatherIcon = cityPanel.find('.cur-weather-block i');
     cityPanel.find('.weather-update-time-data').text(now.fromNow());
-    cityPanel.find('.weather-update-weekday-text small').text(`周${ zhWeekDays[now.isoWeekday()] }`);
+    cityPanel.find('.today-weather-weekday-text').text('周' + zhWeekDays[now.isoWeekday()]);
     cityPanel.find('.today-max-temp').text(todayWeatherData.tmp.max);
     cityPanel.find('.today-min-temp').text(todayWeatherData.tmp.min);
     cityPanel.find('.temp-head-data').text(nowWeatherData.tmp);
     cityPanel.find('.cur-weather-text').text(nowWeatherData.cond.txt);
 
     // Current weather Icon
-    curWeatherIcon.removeClass().addClass(`wi ${ weatherIconClassNames[nowWeatherData.cond.code][isDay ? 'day' : 'night'] }`);
+    curWeatherIcon.removeClass().addClass('wi ' + weatherIconClassNames[nowWeatherData.cond.code][isDay ? 'day' : 'night']);
 
     // Next day weather
     var tomorrowWeatherData = weatherData.daily_forecast[1];
@@ -551,7 +549,7 @@ function initCityWeather(cityRecord, cityPanel) {
     }
     nextDayWeatherFirstRow.find('.next-day-weather-header').text(headerTxt).removeClass(['day', 'night']).addClass(headerClass);
     nextDayWeatherFirstRow.find('.next-day-weather-text').text(weatherTxt);
-    nextDayWeatherFirstRow.find('i').removeClass().addClass(`wi ${ weatherIconClass }`);
+    nextDayWeatherFirstRow.find('i').removeClass().addClass('wi ' + weatherIconClass);
 
     if (isDay) {
       headerTxt = '今天夜间';
@@ -564,9 +562,9 @@ function initCityWeather(cityRecord, cityPanel) {
       weatherTxt = tomorrowWeatherData.cond.txt_d;
       weatherIconClass = weatherIconClassNames[tomorrowWeatherData.cond.code_d].day;
     }
-    nextDayWeatherSecondRow.find('.next-day-weather-header').text(headerTxt).removeClass(['day', 'night']).addClass(headerClass);
-    nextDayWeatherSecondRow.find('.next-day-weather-text').text(weatherTxt);
-    nextDayWeatherSecondRow.find('i').removeClass().addClass(`wi ${ weatherIconClass }`);
+    nextDayWeatherSecondRow.find('.next-day-weather-header').html(headerTxt).removeClass(['day', 'night']).addClass(headerClass);
+    nextDayWeatherSecondRow.find('.next-day-weather-text').html(weatherTxt);
+    nextDayWeatherSecondRow.find('i').removeClass().addClass('wi ' + weatherIconClass);
 
     var hourlyForecasts = weatherData.hourly_forecast;
     var hourlyForecastList = cityPanel.find('.hourly-weather-list');
@@ -578,14 +576,17 @@ function initCityWeather(cityRecord, cityPanel) {
     });
     hourlyForecastList.closest('.scrollbar-macosx').scrollbar();
 
+    // Daily forecast
     var dailyForecastList = cityPanel.find('.weekday-weather-list');
     var dailyForecastData = weatherData.daily_forecast.slice(1);
     dailyForecastList.empty();
     dailyForecastData.forEach(function (forecast) {
       var curWeekday = getCurDatetime(localUtcOffset, forecast.date).isoWeekday();
-      dailyForecastList.append(getNewDailyWeatherItem(`周${ zhWeekDays[curWeekday] }`, forecast.cond.txt_d, weatherIconClassNames[forecast.cond.code_d].day, forecast.tmp.max, forecast.tmp.min));
+      dailyForecastList.append(getNewDailyWeatherItem('周' + zhWeekDays[curWeekday], forecast.cond.txt_d, weatherIconClassNames[forecast.cond.code_d].day, forecast.tmp.max, forecast.tmp.min));
     });
   }).done(function () {
+    // style manipulating
+    resizeHourlyForecastList();
     // Hide loading effect
     hideLoading(cityPanel.find('.card-content'));
   });
@@ -595,8 +596,8 @@ function initRankChart(dtmString) {
   var option = {
     tooltip: {
       trigger: 'axis',
-      axisPointer: { // 坐标轴指示器，坐标轴触发有效
-        type: 'shadow' // 默认为直线，可选为：'line' | 'shadow'
+      axisPointer: {
+        type: 'shadow'
       }
     },
     grid: {
@@ -650,10 +651,7 @@ function initRankChart(dtmString) {
   setChartSize(chart, 0.6);
   chart.resize();
 
-  $(window).on('resize', function () {
-    setChartSize(chart, 0.6);
-    chart.resize();
-  });
+  registerEchartResizeFuncton(chart);
 
   chart.showLoading();
   // AQHI Rank
@@ -689,42 +687,23 @@ function getCurDatetime(utcOffset, string) {
 }
 
 function getNewHourlyWeatherListItem(time, temp) {
-  return $(`
-    <li class="hourly-weather-item halign-row">
-      <div class="hourly-weather-time">${ time }</div>
-      <div class="hourly-weather-temp"><span class="hourly-weather-temp-data">${ temp }</span>º</div>
-    </li>
-  `);
+  return $('\n    <li class="hourly-weather-item halign-row">\n      <div class="hourly-weather-time">' + time + '</div>\n      <div class="hourly-weather-temp"><span class="hourly-weather-temp-data">' + temp + '</span>º</div>\n    </li>\n  ');
 }
 
 function getNewDailyWeatherItem(weekday, weatherText, weatherIconClass, maxTemp, minTemp) {
-  return $(`
-    <div class="row valign-row">
-      <div class="col-md-4">
-        <p class="card-text weather-weekday-text pull-xs-left">
-          <small class="text-muted weekday-text">${ weekday }</small>
-        </p>
-      </div>
-      <div class="col-md-4">
-        <div class="weekday-weather valign-row">
-          <span class="weekday-weather-text">${ weatherText }</span>
-          <i class="wi ${ weatherIconClass }"></i>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="weekday-temp-range pull-xs-right">
-          <strong class="weekday-max-temp">${ maxTemp }</strong>
-          <span class="weekday-min-temp">${ minTemp }</span>
-        </div>
-      </div>
-    </div>
-  `);
+  return $('\n    <div class="row daily-weather-row">\n      <div class="col-xs-3 daily-weather-weekday-col">\n        <p class="card-text daily-weather-weekday-text">' + weekday + '</p>\n      </div>\n      <div class="col-xs-6 daily-weather-descrip-col">\n        <span class="daily-weather-descrip-text">' + weatherText + '</span>\n        <i class="wi ' + weatherIconClass + '"></i>\n      </div>\n      <div class="col-xs-3 daily-temp-range">\n        <span class="daily-max-temp">' + maxTemp + '</span>\n        <span class="daily-min-temp">' + minTemp + '</span>\n      </div>\n    </div>\n  ');
 }
 
 function hideLoading(parent) {
   var overlayEle = parent.find('.loading-overlay');
   overlayEle.fadeOut('slow');
   parent.removeClass('loading');
+}
+
+function showLoading(parent) {
+  var overlayEle = parent.find('.loading-overlay');
+  overlayEle.fadeIn('fast');
+  parent.addClass('loading');
 }
 
 function setChartSize(chart, ratio) {
@@ -736,13 +715,59 @@ function setChartSize(chart, ratio) {
   });
 }
 
+function registerEchartResizeFuncton(chart) {
+  function doneResizing(loadingParent) {
+    hideLoading(loadingParent);
+  }
+
+  var id;
+  $(window).on('resize', function () {
+    var container = $(chart.getDom());
+    var loadingParent = container.closest('.card-content');
+    container.width(0);
+    showLoading(loadingParent);
+
+    var width = container.closest('.card-block').width();
+    var heightToSet = width * 0.6;
+    container.width(width);
+    container.height(heightToSet);
+
+    chart.resize();
+
+    window.clearTimeout(id);
+    id = window.setTimeout(doneResizing.bind(this, loadingParent), 500);
+  });
+}
+
 function getAqhiLevel(indexString) {
   var indexValue = parseFloat(indexString);
   var level = 0;
-  for (let value of aqhiRange) {
-    if (indexValue < value) break;
-    level += 1;
+  var _iteratorNormalCompletion = true;
+  var _didIteratorError = false;
+  var _iteratorError = undefined;
+
+  try {
+    for (var _iterator = aqhiRange[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+      var value = _step.value;
+
+      if (indexValue < value) break;
+      level += 1;
+    }
+  } catch (err) {
+    _didIteratorError = true;
+    _iteratorError = err;
+  } finally {
+    try {
+      if (!_iteratorNormalCompletion && _iterator.return) {
+        _iterator.return();
+      }
+    } finally {
+      if (_didIteratorError) {
+        throw _iteratorError;
+      }
+    }
   }
+
   return level;
 }
 

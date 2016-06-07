@@ -13,15 +13,18 @@ Context variables:
 {% endcomment %}
 <div class="panel panel-default city-panel {% if primary %}primary-city-panel{% endif %}" data-city="{{ city_en }}">
 
-  <div class="panel-heading" role="tab" id="heading-{{ city_en }}">
+  <div class="panel-heading city-panel-heading {% if not primary %}collapsed{% endif %}" role="tab" id="heading-{{ city_en }}">
     <h4 class="panel-title">
-      <a data-toggle="collapse" data-parent="#city-accordion" href="#collapse-{{ city_en }}" aria-expanded="true" aria-controls="collapseOne">
-        {{ title|safe }}
+      <a class="city-title-link" data-toggle="collapse" data-parent="#city-accordion" href="#collapse-{{ city_en }}" aria-expanded="true" aria-controls="collapseOne">
+        <p>
+          {{ title|safe }}
+        </p>
+        <i class="icon-collapse {% if not primary %}icon-rotate-180{% endif %}"></i>
       </a>
     </h4>
   </div>
 
-  <div id="collapse-{{ city_en }}" class="panel-collapse collapse {% if not collapsed %}in{% endif %}" role="tabpanel" aria-labelledby="heading-{{ city_en }}">
+  <div id="collapse-{{ city_en }}" class="panel-collapse collapse {% if not collapsed %}in{% endif %} city-panel-collapse" role="tabpanel" aria-labelledby="heading-{{ city_en }}">
     {% if filled %}
     {% include 'pages/home_citypanel_body.html' %}
     {% endif %}

@@ -12,22 +12,22 @@
 {% endblock scrollspy-nav %}
 
 {% block content %}
-  <div id="city-accordion" role="tablist" aria-multiselectable="true">
-    {% for panel in panel_list %}
-      {{ panel|safe }}
-    {% endfor %}
-  </div>
-
-  <hr>
-  <div class="card" id="rank">
-    <div class="card-header">
-      实时AQHI排名
+  <div class="container main-container">
+    <div id="city-accordion" role="tablist" aria-multiselectable="true">
+      {% for panel in panel_list %}
+        {{ panel|safe }}
+      {% endfor %}
     </div>
-    <div class="card-block">
-      <div id="rank-chart"></div>
+    <hr>
+    <div class="card" id="rank">
+      <div class="card-header">
+        实时AQHI排名
+      </div>
+      <div class="card-block">
+        <div id="rank-chart"></div>
+      </div>
     </div>
   </div>
-
 {% endblock %}
 
 {% block javascript %}
@@ -35,5 +35,5 @@
   <script src="{% static 'lib/moment-2.13.0/moment-with-locales.min.js' %}"></script>
   <script src="{% static 'lib/echarts-3.1.9.min.js' %}"></script>
   <script src="{% static 'lib/jquery.scrollbar.min.js' %}"></script>
-  <script src="{% static 'js/home.js' %}"></script>
+  <script src="{% static 'js/home-compiled.js' %}"></script>
 {% endblock javascript %}
