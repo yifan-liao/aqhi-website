@@ -6,7 +6,7 @@ The backend is developed with Python 3.5 using Django 1.9.5 on Ubuntu 15.04.
 
 ## Setup development environment, the shortest way
 
-1. Create a virtualenv and install python dependencies.
+### Create a virtualenv and install python dependencies.
 
 When this project was developed, some dependencies' need to be installed manually.
 
@@ -22,7 +22,7 @@ workon project_venv
 pip install -r requirements.txt
 ```
 
-2. Create .env file.
+### Create .env file.
 
 `.env` file defines required environment variables.
 
@@ -44,7 +44,7 @@ DATABASE_URL=postgres://aqhi:aqhiweb@localhost:5432/aqhidb
 
 Patterns of db url can be found [here](https://github.com/kennethreitz/dj-database-url#url-schema).
 
-3. Create database
+### Create database
 
 Run:
 
@@ -54,7 +54,7 @@ python manage.py migrate
 
 This will create sqlite3 database.
 
-4. Populate database with test data
+### Populate database with test data
 
 - Populate `City` and `Station` model.
 
@@ -79,7 +79,7 @@ python mange.py add_coordinates city /path/to/project/aqhi/airquality/tests/file
 python mange.py add_coordinates city /path/to/project/aqhi/airquality/tests/files/sample_station_coords.txt
 ```
 
-5. Get real data
+### Get real data
 
 With the base of basic city and station data, we can finally crawl real data from the website and start developing:
 
@@ -87,7 +87,7 @@ With the base of basic city and station data, we can finally crawl real data fro
 python manage.py start_crawl /path/to/saving/dir
 ```
 
-6. Run server
+### Run server
 
 ```bash
 python manage.py runserver
