@@ -52,10 +52,3 @@ class SavePagePipeline(object):
                     self._backup_to_file(city_name, spider.res_dir, item['page'], logger)
             else:
                 self._backup_to_file(city_name, spider.res_dir, item['page'], logger)
-                """
-                file_name = '{}.html'.format(city_name)
-                with open(os.path.join(spider.res_dir, file_name), 'wb') as f:
-                    f.write(item['page'])
-                logger.info("Successfully backup the page of city '{}'".format(city_name))
-                """
-
