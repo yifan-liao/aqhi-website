@@ -46,7 +46,9 @@ class HomeView(TemplateView):
         # Construct city panels
         panel_list = []
         # primary panel
-        primary_city = aq_models.City.objects.primary()[0]
+        primary_city = aq_models.City.objects.primary()
+        if not primary_city.exists():
+            return {}
         primary_panel = render_city_panel(city=primary_city, primary=True)
         panel_list.append(primary_panel)
 

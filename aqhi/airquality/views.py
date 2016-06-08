@@ -175,7 +175,9 @@ class LatestCityRecordView(FilterFieldsMixin,
     def get_object(self):
         queryset = self.get_queryset()
 
-        city_en = self.request.query_params['city']
+        city_en = self.request.query_params.get('city', None)
+        if city_en is None:
+            return None
         try:
             obj = queryset.latest_record_in(city_en)
         except queryset.model.DoesNotExist:
