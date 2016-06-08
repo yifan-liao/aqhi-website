@@ -127,3 +127,4 @@ jspm_packages
 
 ### Django
 staticfiles/
+!/aqhi/static/lib
