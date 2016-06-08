@@ -32,9 +32,9 @@ class Command(BaseCommand):
                             help='The parent directory to save the pages. '
                                  'If -s is not set, then '
                                  'web pages will be saved in a directory under it named by timestamp.')
-        parser.add_argument('username',
+        parser.add_argument('--username',
                             help='campus network username')
-        parser.add_argument('password',
+        parser.add_argument('--password',
                             help='campus network password')
         parser.add_argument('-s', '--absolute', action='store_true',
                             help='a flag showing whether dest is absolute(disable auto-generating subdirectory)')
@@ -93,7 +93,10 @@ class Command(BaseCommand):
         login_logger.setLevel(logging.INFO)
         login_logger.addHandler(log_file_handler)
         # auto login
-        buptnet.autologin(options['username'], options['password'], login_logger)
+        username = options['username']
+        password = options['password']
+        if username is not None and password is not None:
+            buptnet.autologin(username, password, login_logger)
 
         # Setup logger for crawler
         crawler_logger = logging.getLogger('pm25in')
