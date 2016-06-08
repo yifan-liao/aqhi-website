@@ -89,6 +89,15 @@ python manage.py start_crawl /path/to/saving/dir
 
 ### Run server
 
+If using production settings:
+
+```bash
+python manage.py collectstatic
+python manage.py runserver --insecure
+```
+
+With development settings:
+
 ```bash
 python manage.py runserver
 ```
