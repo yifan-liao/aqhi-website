@@ -14,9 +14,6 @@ python-dateutil==2.5.3
 # You should install the latest version on Github
 drf-extensions==0.3.0
 
-# Database
-psycopg2==2.6.1
-
 # Tools to get data
 lxml==3.6.0
 chardet==2.3.0
@@ -29,7 +26,6 @@ paramiko==2.0.0
 scrapy==1.1.0
 
 # buptnet
-lxml==3.6.0
 requests==2.9.1
 
 # CORS

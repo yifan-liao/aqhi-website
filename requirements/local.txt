@@ -4,3 +4,7 @@
 # Tests
 django-debug-toolbar==1.4
 factory-boy==2.7.0
+
+# Database
+psycopg2==2.6.1
+
