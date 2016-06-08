@@ -128,3 +128,6 @@ jspm_packages
 ### Django
 staticfiles/
 !/aqhi/static/lib
+
+### Custom
+*.sqlite3
