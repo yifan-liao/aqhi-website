@@ -59,3 +59,17 @@ class SavePagePipelineTestCase(TestCase):
         self.assertEqual(self.mock_logger.info.call_count, 2)
         self.mock_logger.info.assert_any_call('Successfully save a record: {}'.format('{name} on {dtm}'.format(name='city', dtm=info_dict['update_dtm'])))
         self.mock_logger.info.assert_any_call("Successfully backup the page of city '{}'".format('city'))
+
+    @mock.patch('aqhi.airquality.crawler.pm25in.pipelines.open')
+    @mock.patch('aqhi.airquality.utils.parse_and_create_records_from_html', autospec=True)
+    def test_dont_parse(self, mock_parse_and_create, mock_open):
+        res_dir = 'path'
+        item = PageItem(name='city', page=b'abcd')
+        spider = AQISpider(res_dir, self.mock_logger, 0, False)
+
+        SavePagePipeline().process_item(item, spider)
+        self.assertEqual(mock_parse_and_create.call_count, 0)
+        mock_open.assert_called_once_with('path/city.html', 'wb')
+        self.assertEqual(self.mock_logger.info.call_count, 1)
+        self.mock_logger.info.assert_any_call("Successfully backup the page of city '{}'".format('city'))
+

@@ -45,6 +45,8 @@ class Command(BaseCommand):
         parser.add_argument('--page-num', type=positive_integer, default=0,
                             help='Set a max number of pages to crawl. Default to 0 represents no limit. '
                                  '(for debugging)')
+        parser.add_argument('--not-parse', action='store_false',
+                            help='whether to parse crawled pagees and save data to db.')
 
         return parser
 
@@ -119,5 +121,11 @@ class Command(BaseCommand):
         proj_settings = get_project_settings()
         proj_settings.set('LOG_FILE', log_file_path)
         process = CrawlerProcess(proj_settings)
-        process.crawl(AQISpider, res_dir=root_dir, logger=crawler_logger, page_num=options['page_num'])
+        process.crawl(
+            AQISpider,
+            res_dir=root_dir,
+            logger=crawler_logger,
+            page_num=options['page_num'],
+            to_parse=options['not_parse']
+        )
         process.start()

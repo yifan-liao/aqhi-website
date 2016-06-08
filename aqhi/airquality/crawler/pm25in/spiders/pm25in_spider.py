@@ -12,11 +12,12 @@ class AQISpider(scrapy.Spider):
         'http://pm25.in/',
     ]
 
-    def __init__(self, res_dir, logger, page_num, *args, **kwargs):
+    def __init__(self, res_dir, logger, page_num, to_parse=True, *args, **kwargs):
         super(AQISpider, self).__init__(*args, **kwargs)
         self.res_dir = res_dir
         self.custom_logger = logger
         self.page_num = page_num
+        self.to_parse = to_parse
 
     def parse(self, response):
         # Get all city urls
