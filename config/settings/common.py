@@ -23,9 +23,6 @@ APPS_DIR = ROOT_DIR.path('aqhi')
 
 env = environ.Env()
 
-# read .env file as env variables
-environ.Env.read_env(str(ROOT_DIR) + '/.env')
-
 # APP CONFIGURATION
 # ------------------------------------------------------------------------------
 DJANGO_APPS = (
